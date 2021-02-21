@@ -6,16 +6,13 @@ use Project\Config\Db;
 
 class Model
 {
-	private static $link;
+	protected static $link;
 
 	// Установка соединения с базой
 	public function __construct()
 	{
 		if (!self::$link) {
 			self::$link = Db::getInstance()->getConnection();
-			echo "Подключение установлено";
-		} else {
-			echo "Подключение не установлено";
 		}
 	}
 
@@ -42,4 +39,5 @@ class Model
 		}
 		return $data;
 	}
+
 }
