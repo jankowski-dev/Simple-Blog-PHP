@@ -9,6 +9,39 @@ use \Project\Models\User;
 class UserController extends Controller
 {
 
+    public function auth()
+    {
+        $this->title = 'Форма авторизации';
+        $errors = [];
+        $user = new User;
+
+        if ($user->isGuest()) {
+
+            if ((isset($_POST['userEmail']) && !empty($_POST['userEmail']))
+                && (isset($_POST['userPassword']) && !empty($_POST['userPassword']))
+            ) {
+                $email = $_POST['userEmail'];
+                $password = $_POST['userPassword'];
+
+                $userID = $user->checkUser($email, $password);
+
+                if ($userID !== false) {
+                    $user->authUser($userID);
+                    header('Location: /cpanel/');
+                } else {
+                    $errors[] = 'Неверные данные для входа';
+                }
+            }
+        } else {
+
+            header('Location: /cpanel/');
+        }
+
+        return $this->render('user/auth', [
+            'errors'    => $errors
+        ]);
+    }
+
     public function register()
     {
         $this->title = 'Форма регистрации';
@@ -54,5 +87,14 @@ class UserController extends Controller
         return $this->render('user/register', [
             'errors'    => $errors
         ]);
+    }
+
+    public function logout()
+    {
+        $user = new User();
+        $result = $user->userLogout();
+        if ($result) {
+            header('Location: /auth/');
+        }
     }
 }

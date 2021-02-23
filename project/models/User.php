@@ -57,7 +57,7 @@ class User extends Model
     }
 
     // Метод проверки пароля на валидность
-    public static function checkPass($password)
+    public function checkPass($password)
     {
         if (strlen($password) >= 6) {
             return true;
@@ -65,4 +65,70 @@ class User extends Model
         return false;
     }
 
+    // Метод поиска введенной пары логин-пароль в базе
+    public function checkUser($email, $pass)
+    {
+        $sql = 'SELECT * FROM user WHERE email = :email and password = :pass';
+        $rezult = self::$link->prepare($sql);
+        $rezult->bindParam(':email', $email, \PDO::PARAM_STR);
+        $rezult->bindParam(':pass', $pass, \PDO::PARAM_STR);
+        $rezult->execute();
+
+        $user = $rezult->fetch();
+
+        if ($user) {
+            return $user['user_id'];
+        } else {
+            return false;
+        }
+    }
+
+    // Метод проверки авторизован пользователь? Возвращает id пользователя
+    public function checkLogged()
+    {
+        if (isset($_SESSION['id'])) {
+            return $_SESSION['id'];
+        }
+        return false;
+    }
+
+    // Метод авторизации пользователя
+    public function authUser($userID)
+    {
+        $userInfoArray = $this->getUserById($userID);
+
+        $_SESSION['name']       = $userInfoArray['name'];
+        $_SESSION['id']         = $userInfoArray['user_id'];
+        $_SESSION['email']      = $userInfoArray['email'];
+        $_SESSION['country']    = $userInfoArray['country'];
+    }
+
+    // Метод проверки авторизован пользователь? Возвращает true или false
+    public function isGuest()
+    {
+        if (isset($_SESSION['id'])) {
+            return false;
+        }
+        return true;
+    }
+
+    // Метод для выхода из аккаунта
+    public function userLogout()
+    {
+        if (isset($_SESSION['id'])) {
+            unset($_SESSION['id']);
+        }
+        return true;
+    }
+
+    // Метод получения данных об авторизованном пользователе
+    public function getUserById($userID)
+    {
+        $sql = 'SELECT * FROM user WHERE user_id = :id';
+        $rezult = self::$link->prepare($sql);
+        $rezult->bindParam(':id', $userID, \PDO::PARAM_STR);
+        $rezult->setFetchMode(\PDO::FETCH_ASSOC);
+        $rezult->execute();
+        return $rezult->fetch();
+    }
 }

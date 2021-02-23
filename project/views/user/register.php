@@ -10,6 +10,8 @@
                 </ul>
             <?php endif; ?>
 
+            <?php if (!isset($_SESSION['id'])) : ?>
+
             <?php if (!isset($userName)) : ?>
 
                 <form action="" method="POST">
@@ -44,7 +46,10 @@
             <?php else : ?>
                 Добро пожаловать, <b><?= $userName ?>!</b>
                 Вы успешно зарегистрированы!
-                Активируйте аккаунт через свою почту <b><?= $userEmail ?></b>
+            <?php endif; ?>
+
+            <?php else : ?>
+                Вы уже зарегистрированы, <b><?= $_SESSION['name'] ?>!</b>
             <?php endif; ?>
 
         </div>
