@@ -4,29 +4,30 @@ namespace Project\Controllers;
 
 use \Core\Controller;
 use \Project\Models\Admin;
-use \Project\Models\User;
+use \Project\Models\Post;
 
 class AdminController extends Controller
 {
     public function index()
     {
         $this->title = 'cPanel';
-        $user = new User();
-
-        // Если пользователь не авторизован
-        if ($user->checkLogged() !== false) {
+        // Если пользователь авторизован
+        if ($_SESSION['id'] !== false) {
             // А если авторизован, и он администратор
-            if ($user->checkLogged() == 1) {
-                // Что-то делаем
-                // ...
+            if ($_SESSION['id'] == 1) {
+
+                // Получаем список всех постов
+                $post = new Post();
+                $allPosts = $post->getAll();
+
                 // Загружаем представление
-                return $this->render('admin/index');
-                // Если пользователь не администратор
+                return $this->render('admin/index', ['posts' => $allPosts]);
+                // Если же пользователь не администратор
             } else {
                 header('Location: /panel/');
             }
         }
-        // Если пользователь не авторизован
+        // В ином случаем перенаправляем его на форму
         header('Location: /auth/');
     }
 }
