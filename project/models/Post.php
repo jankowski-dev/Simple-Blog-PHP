@@ -16,11 +16,6 @@ class Post extends Model
 		return $this->findOne("SELECT * FROM post WHERE id=$id");
 	}
 
-	// public function updatePost($id, $title, $desc, $keyword, $story)
-	// {
-	// 	return $this->findOne("UPDATE post SET title = $title, description = $desc, keyword = $keyword, story = $story WHERE id=$id");
-	// }
-
 	// Метод добавления нового пользователя
 	public function updatePost($id, $title, $desc, $keyword, $story)
 	{

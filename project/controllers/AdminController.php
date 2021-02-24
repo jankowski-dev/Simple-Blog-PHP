@@ -8,7 +8,7 @@ use \Project\Models\Post;
 
 class AdminController extends Controller
 {
-    // Получение
+    // Индексная страница
     public function index()
     {
         $this->title = 'cPanel';
@@ -32,13 +32,16 @@ class AdminController extends Controller
         header('Location: /auth/');
     }
 
+
+
+    // Редактирование поста
     public function editPost($arg)
     {
         $this->title = 'Редактирование поста';
         $errors = [];
         $update = false;
 
-        if ($_SESSION['id'] !== false) {
+        if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
             // А если авторизован, и он администратор
             if ($_SESSION['id'] == 1) {
 
@@ -66,9 +69,6 @@ class AdminController extends Controller
             }
         }
 
-        return $this->render('admin/editPost', [
-            'errors' => $errors,
-            'update' => $update
-        ]);
+        header('Location: /auth/');
     }
 }
