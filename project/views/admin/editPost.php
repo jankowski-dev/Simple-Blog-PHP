@@ -44,16 +44,16 @@
             </div>
             <div class="form-group col-md-6">
                 <label for="inputPassword4">Категория</label>
-                <input type="text" class="form-control" value="<?= $post['category']; ?>">
+                <input type="text" class="form-control" value="<?= $post['category_id']; ?>">
             </div>
         </div>
         <div class="form-group">
             <label for="inputAddress">Описание</label>
-            <input type="text" class="form-control" value="<?= $post['description']; ?>">
+            <textarea rows="4" class="form-control"><?= $post['description']; ?></textarea>
         </div>
         <div class="form-group">
             <label for="inputAddress">Текст поста</label>
-            <textarea rows="18" class="form-control" id="tinyEditor"><?= $post['story']; ?></textarea>
+            <textarea rows="18" class="form-control" id="textarea"><?= $post['story']; ?></textarea>
         </div>
         <div class="form-group">
             <label for="inputAddress">Ключевые слова</label>
