@@ -1,12 +1,29 @@
-<b>Это админпанель</b><br>
-Привет, <?php echo $_SESSION['name'];  ?><br>
-Ваша почта: <?php echo $_SESSION['email']; ?><br>
-Ваша страна: <?php echo $_SESSION['country']; ?><br>
- <a href="/logout/">Выйти</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">cPanel</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Привет, <?php echo $_SESSION['name'];  ?> <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Ваша почта: <?php echo $_SESSION['email']; ?> <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Ваша страна: <?php echo $_SESSION['country']; ?> <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout/">Выйти</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
 <table class="table">
+
   <thead class="thead-light">
     <tr>
       <th scope="col">id</th>
@@ -15,29 +32,16 @@
       <th scope="col">Категория</th>
     </tr>
   </thead>
+
   <tbody>
-
-<?php foreach($posts as $post) : ?>
-    <tr>
-      <th scope="row"><?php echo $post['id']; ?></th>
-      <td><?php echo $post['date']; ?></td>
-      <td><?php echo $post['title']; ?></td>
-      <td><?php echo $post['category']; ?></td>
-    </tr>
-
+    <?php foreach ($posts as $post) : ?>
+      <tr>
+        <th scope="row"><?php echo $post['id']; ?></th>
+        <td><?php echo $post['date']; ?></td>
+        <td><?php echo $post['title']; ?></td>
+        <td><?php echo $post['category']; ?></td>
+      </tr>
     <?php endforeach; ?>
-
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>
   </tbody>
+
 </table>
