@@ -32,19 +32,18 @@ class AdminController extends Controller
         header('Location: /auth/');
     }
 
-    public function editNewsItem($arg)
+    public function editPost($arg)
     {
         $this->title = 'Редактирование поста';
 
         if ($_SESSION['id'] !== false) {
             // А если авторизован, и он администратор
             if ($_SESSION['id'] == 1) {
-
+                $errors = [];
                 $post = new Post();
-                $postID = $post->getPostById($arg['id']);
-                cast_print($postID);
+                $postItem = $post->getPostById($arg['id']);
 
-                return $this->render('admin/editNewsItem');
+                return $this->render('admin/editPost', ['post' => $postItem, 'errors' => $errors]);
             }
         }
 

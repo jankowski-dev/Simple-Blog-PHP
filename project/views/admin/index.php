@@ -1,5 +1,5 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">cPanel</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="/cpanel/">cPanel</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -38,7 +38,7 @@
       <tr>
         <th scope="row"><?php echo $post['id']; ?></th>
         <td><?php echo $post['date']; ?></td>
-        <td><?php echo $post['title']; ?></td>
+        <td><a href="/cpanel/edit-post/<?= $post['id']; ?>/"><?php echo $post['title']; ?></a></td>
         <td><?php echo $post['category']; ?></td>
       </tr>
     <?php endforeach; ?>
