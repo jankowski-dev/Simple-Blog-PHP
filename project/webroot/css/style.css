@@ -7,10 +7,50 @@
 }
 
 .form-style {
-    background-color: rgba(0,0,0, 0.05);
+    background-color: rgba(0, 0, 0, 0.05);
     width: 450px;
     height: auto;
     padding: 30px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    /* Левый нижний угол */
+    padding: 10px;
+    /* Поля вокруг текста */
+    background: rgba(0, 0, 0, 0.02);
+    /* Цвет фона */
+    color: #fff;
+    /* Цвет текста */
+    width: 100%;
+}
+
+.fullMonitor {
+    position: relative;
+    height: 100vh;
+}
+
+body {
+    height: 100%;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.content {
+    flex: 1 0 auto;
+}
+
+.footer {
+    flex: 0 0 auto;
+}
+
+.red {
+    background-color: red;
 }
 
 .margin-top-10 {

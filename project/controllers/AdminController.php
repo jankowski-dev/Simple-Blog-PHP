@@ -21,8 +21,27 @@ class AdminController extends Controller
                 $post = new Post();
                 $allPosts = $post->getPostAll();
 
+                // Массовое удаление постов
+                $arrayPostId = [];
+                $i = 0;
+
+                if (isset($_POST['submitDelete'])) {
+                    $arrayPostId = $_POST['checkbox'];
+                    $i = 0;
+
+                    foreach ($arrayPostId as $item) {
+                        $result = $post->delete($item);
+                        $i++;
+                    }
+
+                    header('Location: /cpanel/');
+                }
+
                 // Загружаем представление
-                return $this->render('admin/index', ['posts' => $allPosts]);
+                return $this->render('admin/index', [
+                    'posts' => $allPosts
+                ]);
+
                 // Если же пользователь не администратор
             } else {
                 header('Location: /panel/');
@@ -57,8 +76,8 @@ class AdminController extends Controller
                     $keyword =      $_POST['keyword'];
                     $story =        $_POST['story'];
 
-                    // Реализовать данный метод в модели!!!!!!!!!!!!!!!!!!!
-                    $update = $post->updatePost($arg['id'], $title, $description, $keyword, $story);
+                    // Отправляем атредактированные данные в базу
+                    $update = $post->update($arg['id'], $title, $description, $keyword, $story);
                 }
 
                 return $this->render('admin/editPost', [
@@ -70,5 +89,68 @@ class AdminController extends Controller
         }
 
         header('Location: /auth/');
+    }
+
+    public function createPost()
+    {
+        $this->title = 'Создание поста';
+        $errors = [];
+        $create = false;
+        $postItem = '';
+
+        if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
+            // А если авторизован, и он администратор
+            if ($_SESSION['id'] == 1) {
+
+                $post = new Post();
+
+                // Сохранение поста
+                if (isset($_POST['submit'])) {
+
+                    $title =        $_POST['title'];
+                    $description =  $_POST['description'];
+                    $keyword =      $_POST['keyword'];
+                    $story =        $_POST['story'];
+
+                    // Реализовать данный метод в модели!
+                    $create = $post->create($title, $description, $keyword, $story);
+                }
+
+                return $this->render('admin/createPost', [
+                    'errors'    => $errors,
+                    'create'    => $create
+                ]);
+            }
+        }
+
+        header('Location: /auth/');
+    }
+
+    public function deletePost($arg)
+    {
+        $post = new Post();
+        $result = $post->delete($arg['id']);
+        if ($result) {
+            header('Location: /cpanel/');
+        }
+    }
+
+    public function deletePostAll()
+    {
+        $post = new Post();
+        $arrayPostId = [];
+        $i = 0;
+
+        if (isset($_POST['submitDelete'])) {
+            $arrayPostId = $_POST['checkbox'];
+            $i = 0;
+
+            foreach ($arrayPostId as $item) {
+                $result = $post->delete($item);
+                $i++;
+            }
+
+            header('Location: /cpanel/');
+        }
     }
 }

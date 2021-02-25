@@ -16,32 +16,44 @@
         <a class="nav-link" href="#">Ваша страна: <?php echo $_SESSION['country']; ?> <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="/cpanel/create-post/">Создать пост</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="/logout/">Выйти</a>
       </li>
     </ul>
   </div>
 </nav>
 
-<table class="table">
+<form method="POST" action="">
+  <table class="table">
 
-  <thead class="thead-light">
-    <tr>
-      <th scope="col">id</th>
-      <th scope="col">Дата</th>
-      <th scope="col">Заголовок</th>
-      <th scope="col">Категория</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <?php foreach ($posts as $post) : ?>
+    <thead class="thead-light">
       <tr>
-        <th scope="row"><?php echo $post['id']; ?></th>
-        <td><?php echo $post['date']; ?></td>
-        <td><a href="/cpanel/edit-post/<?= $post['id']; ?>/"><?php echo $post['title']; ?></a></td>
-        <td><?php echo $post['category']; ?></td>
+        <th scope="col"><input type="checkbox"></th>
+        <th scope="col">id</th>
+        <th scope="col">Дата</th>
+        <th scope="col">Заголовок</th>
+        <th scope="col">Операции</th>
+        <th scope="col">Категория</th>
       </tr>
-    <?php endforeach; ?>
-  </tbody>
+    </thead>
 
-</table>
+    <tbody>
+      <?php foreach ($posts as $post) : ?>
+        <tr>
+          <th scope="col"><input type="checkbox" name="checkbox[]" value="<?= $post['id']; ?>"></th>
+          <th><?php echo $post['id']; ?></th>
+          <td><?php echo $post['date']; ?></td>
+          <td><a href="/cpanel/edit-post/<?= $post['id']; ?>/"><?php echo $post['title']; ?></a></td>
+          <td><a href="/cpanel/delete-post/<?= $post['id']; ?>/" class="btn btn-light">Удалить</a></td>
+          <td><?php echo $post['category_id']; ?></td>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+
+  </table>
+  <li class="nav-item">
+    <button type="submit" name="submitDelete" class="btn btn-primary">Удалить посты</button>
+  </li>
+</form>
