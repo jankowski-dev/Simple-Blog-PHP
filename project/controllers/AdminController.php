@@ -3,12 +3,18 @@
 namespace Project\Controllers;
 
 use \Core\Controller;
-use \Project\Models\Admin;
 use \Project\Models\Post;
+use \Project\Models\Category;
 
 class AdminController extends Controller
 {
-    // Индексная страница
+
+    /********************************
+     * Индексный метод админпанели.
+     * Проверяет права доступа и
+     * реализует функционал
+     ********************************/
+
     public function index()
     {
         $this->title = 'cPanel';
@@ -17,29 +23,20 @@ class AdminController extends Controller
             // А если авторизован, и он администратор
             if ($_SESSION['id'] == 1) {
 
-                // Получаем список всех постов
                 $post = new Post();
-                $allPosts = $post->getPostAll();
+                $category = new Category();
+
+                // Получаем список всех постов
+                $getPosts = $post->getPostAll();
+                $getCategories = $category->getCategoryAll();
 
                 // Массовое удаление постов
-                $arrayPostId = [];
-                $i = 0;
-
-                if (isset($_POST['submitDelete'])) {
-                    $arrayPostId = $_POST['checkbox'];
-                    $i = 0;
-
-                    foreach ($arrayPostId as $item) {
-                        $result = $post->delete($item);
-                        $i++;
-                    }
-
-                    header('Location: /cpanel/');
-                }
+                $this->deletePostAll();
 
                 // Загружаем представление
                 return $this->render('admin/index', [
-                    'posts' => $allPosts
+                    'posts'         => $getPosts,
+                    'categories'    => $getCategories
                 ]);
 
                 // Если же пользователь не администратор
@@ -52,8 +49,12 @@ class AdminController extends Controller
     }
 
 
+    /********************************
+     * Редактирование поста.
+     * Принимает данные из формы и
+     * изменяет пост
+     ********************************/
 
-    // Редактирование поста
     public function editPost($arg)
     {
         $this->title = 'Редактирование поста';
@@ -66,30 +67,41 @@ class AdminController extends Controller
 
                 // Вытаскиваем данные
                 $post = new Post();
+                $category = new Category();
                 $postItem = $post->getPostById($arg['id']);
+                $categories = $category->getCategoryAll();
 
                 // Сохранение поста
                 if (isset($_POST['submit'])) {
 
-                    $title =        $_POST['title'];
-                    $description =  $_POST['description'];
-                    $keyword =      $_POST['keyword'];
-                    $story =        $_POST['story'];
+                    $title          =  $_POST['title'];
+                    $description    =  $_POST['description'];
+                    $keyword        =  $_POST['keyword'];
+                    $category_id    =  $_POST['category_id'];
+                    $story          =  $_POST['story'];
 
-                    // Отправляем атредактированные данные в базу
-                    $update = $post->update($arg['id'], $title, $description, $keyword, $story);
+                    // Отправляем отредактированные данные в базу
+                    $update = $post->update($arg['id'], $title, $category_id, $description, $keyword, $story);
                 }
 
                 return $this->render('admin/editPost', [
-                    'post'      => $postItem,
-                    'errors'    => $errors,
-                    'update'    => $update
+                    'post'        => $postItem,
+                    'categories'  => $categories,
+                    'errors'      => $errors,
+                    'update'      => $update
                 ]);
             }
         }
 
         header('Location: /auth/');
     }
+
+
+    /********************************
+     * Создание поста.
+     * Принимает данные из формы и
+     * создает пост
+     ********************************/
 
     public function createPost()
     {
@@ -103,28 +115,39 @@ class AdminController extends Controller
             if ($_SESSION['id'] == 1) {
 
                 $post = new Post();
+                $category = new Category();
+                $categories = $category->getCategoryAll();
 
                 // Сохранение поста
                 if (isset($_POST['submit'])) {
 
-                    $title =        $_POST['title'];
-                    $description =  $_POST['description'];
-                    $keyword =      $_POST['keyword'];
-                    $story =        $_POST['story'];
+                    $title          =  $_POST['title'];
+                    $description    =  $_POST['description'];
+                    $keyword        =  $_POST['keyword'];
+                    $category_id    =  $_POST['category_id'];
+                    $story          =  $_POST['story'];
 
                     // Реализовать данный метод в модели!
-                    $create = $post->create($title, $description, $keyword, $story);
+                    $create = $post->create($title, $category_id, $description, $keyword, $story);
                 }
 
                 return $this->render('admin/createPost', [
-                    'errors'    => $errors,
-                    'create'    => $create
+                    'errors'        => $errors,
+                    'categories'    => $categories,
+                    'create'        => $create
                 ]);
             }
         }
 
         header('Location: /auth/');
     }
+
+
+    /********************************
+     * Одиночное удаление поста.
+     * Принимает аргументом id поста и
+     * удаляет
+     ********************************/
 
     public function deletePost($arg)
     {
@@ -135,19 +158,24 @@ class AdminController extends Controller
         }
     }
 
+
+    /********************************
+     * Массовое удаление постов.
+     * Принимает данные из checkbox,
+     * и циклом удаляет посты
+     ********************************/
+
     public function deletePostAll()
     {
         $post = new Post();
         $arrayPostId = [];
         $i = 0;
 
-        if (isset($_POST['submitDelete'])) {
+        if (isset($_POST['submit'])) {
             $arrayPostId = $_POST['checkbox'];
-            $i = 0;
 
             foreach ($arrayPostId as $item) {
                 $result = $post->delete($item);
-                $i++;
             }
 
             header('Location: /cpanel/');

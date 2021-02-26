@@ -47,13 +47,20 @@
           <td><?php echo $post['date']; ?></td>
           <td><a href="/cpanel/edit-post/<?= $post['id']; ?>/"><?php echo $post['title']; ?></a></td>
           <td><a href="/cpanel/delete-post/<?= $post['id']; ?>/" class="btn btn-light">Удалить</a></td>
-          <td><?php echo $post['category_id']; ?></td>
+          <td>
+            <?php foreach ($categories as $category) {
+              if ($post['category_id'] == $category['id']) {
+                echo $category['title'];
+                break;
+              }
+            } ?>
+          </td>
         </tr>
       <?php endforeach; ?>
     </tbody>
 
   </table>
   <li class="nav-item">
-    <button type="submit" name="submitDelete" class="btn btn-primary">Удалить посты</button>
+    <button type="submit" name="submit" class="btn btn-primary">Удалить посты</button>
   </li>
 </form>

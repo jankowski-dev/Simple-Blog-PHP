@@ -26,8 +26,6 @@
 </nav>
 
 <div class="container">
-    <!-- <div class="form-containers-edit"> -->
-    <!-- <div class="form-style"> -->
 
     <?php if ($errors != false) : ?>
         <ul>
@@ -47,12 +45,15 @@
                     <label for="inputEmail4">Заголовок</label>
                     <input type="text" name="title" class="form-control"">
                 </div>
-                <div class="form-group col-md-6">
+                <div class=" form-group col-md-6">
                     <label for="inputPassword4">Категория</label>
-                    <select class="custom-select">
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <select class="custom-select" name="category_id">
+                        <option selected disabled >Выберите пункт</option>
+                        <?php foreach ($categories as $category) : ?>
+                            <option value="<?= $category['id']; ?>">
+                                <?= $category['title']; ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
@@ -86,6 +87,4 @@
 
     <div class="margin-top-70"></div>
 
-    <!-- </div> -->
-    <!-- </div> -->
 </div>

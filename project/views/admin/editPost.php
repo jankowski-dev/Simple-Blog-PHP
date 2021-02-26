@@ -50,13 +50,16 @@
 
                 <div class="form-group col-md-6">
                     <label for="inputPassword4">Категория</label>
-                    <select class="custom-select">
-                        <option value="1"><?= $post['category_id']; ?></option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <select class="custom-select" name="category_id">
+                        <?php foreach ($categories as $category) : ?>
+                            <option <?php if ($post['category_id'] == $category['id']) echo 'selected'; ?> value="<?= $category['id']; ?>">
+                                <?= $category['title']; ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>
+
             <div class="form-group">
                 <label for="inputAddress">Описание</label>
                 <textarea rows="4" name="description" class="form-control"><?= $post['description']; ?></textarea>
