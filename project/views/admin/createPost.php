@@ -28,11 +28,13 @@
 <div class="container">
 
     <?php if ($errors != false) : ?>
-        <ul>
-            <?php foreach ($errors as $error) : ?>
-                <li><?= $error ?></li>
-            <?php endforeach; ?>
-        </ul>
+        <div class="error">
+            <ul>
+                <?php foreach ($errors as $error) : ?>
+                    <li><?= $error ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
     <?php endif; ?>
 
     <div class="margin-top-70"></div>
@@ -43,12 +45,11 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputEmail4">Заголовок</label>
-                    <input type="text" name="title" class="form-control"">
+                    <input type="text" name="title" class="form-control">
                 </div>
                 <div class=" form-group col-md-6">
                     <label for="inputPassword4">Категория</label>
                     <select class="custom-select" name="category_id">
-                        <option selected disabled >Выберите пункт</option>
                         <?php foreach ($categories as $category) : ?>
                             <option value="<?= $category['id']; ?>">
                                 <?= $category['title']; ?>

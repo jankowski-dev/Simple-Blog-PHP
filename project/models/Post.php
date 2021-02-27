@@ -9,12 +9,12 @@ class Post extends Model
 
 	/********************************
 	 * Метод получает все записи.
-	 * Без аргументов
+	 * JOIN с таблицой категорий.
 	 ********************************/
 
 	public function getPostAll()
 	{
-		return $this->findMany("SELECT * FROM post");
+		return $this->findMany("SELECT post.id, post.title, post.date, category.title as category FROM post JOIN category ON category.id = post.category_id ORDER BY post.id;");
 	}
 
 
@@ -87,9 +87,20 @@ class Post extends Model
 		return $rezult->execute();
 	}
 
-	// Получить все записи
-	// public function getPostAll()
-	// {
-	// 	return $this->findMany("SELECT post.id, post.title, post.date, category FROM post JOIN category ON category.id = post.category_id");
-	// }
+	/********************************
+	 * Метод поверяет на валидность.
+	 * Принимает аргументом массив
+	 * данных из полей формы
+	 ********************************/
+
+	public static function notEmpty($arr)
+	{
+		$error = false;
+		foreach ($arr as $key => $value) {
+			if (empty($arr[$key])) {
+				$error[] = 'Поле ' . '<b>' . $key . '</b>' . ' не может быть пустым!';
+			}
+		}
+		return $error;
+	}
 }

@@ -18,6 +18,8 @@ class AdminController extends Controller
     public function index()
     {
         $this->title = 'cPanel';
+        $errors = false;
+
         // Если пользователь авторизован
         if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
             // А если авторизован, и он администратор
@@ -26,7 +28,7 @@ class AdminController extends Controller
                 $post = new Post();
                 $category = new Category();
 
-                // Получаем список всех постов
+                // Получаем список всех постов и категорий
                 $getPosts = $post->getPostAll();
                 $getCategories = $category->getCategoryAll();
 
@@ -58,9 +60,10 @@ class AdminController extends Controller
     public function editPost($arg)
     {
         $this->title = 'Редактирование поста';
-        $errors = [];
+        $errors = false;
         $update = false;
 
+        // Пользователь авторизован?
         if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
             // А если авторизован, и он администратор
             if ($_SESSION['id'] == 1) {
@@ -80,10 +83,24 @@ class AdminController extends Controller
                     $category_id    =  $_POST['category_id'];
                     $story          =  $_POST['story'];
 
+                    $parameters = [
+                        'заголовок'         => $title,
+                        'описание'          => $description,
+                        'ключевые слова'    => $keyword,
+                        'категория'         => $category_id,
+                        'текст поста'       => $story
+                    ];
+
+                    // Проверка на валидность полей
+                    $errors = $post->notEmpty($parameters);
+
                     // Отправляем отредактированные данные в базу
-                    $update = $post->update($arg['id'], $title, $category_id, $description, $keyword, $story);
+                    if ($errors == false) {
+                        $update = $post->update($arg['id'], $title, $category_id, $description, $keyword, $story);
+                    }
                 }
 
+                // Загружаем представление
                 return $this->render('admin/editPost', [
                     'post'        => $postItem,
                     'categories'  => $categories,
@@ -106,9 +123,8 @@ class AdminController extends Controller
     public function createPost()
     {
         $this->title = 'Создание поста';
-        $errors = [];
+        $errors = false;
         $create = false;
-        $postItem = '';
 
         if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
             // А если авторизован, и он администратор
@@ -127,8 +143,21 @@ class AdminController extends Controller
                     $category_id    =  $_POST['category_id'];
                     $story          =  $_POST['story'];
 
-                    // Реализовать данный метод в модели!
-                    $create = $post->create($title, $category_id, $description, $keyword, $story);
+                    $parameters = [
+                        'заголовок'         => $title,
+                        'описание'          => $description,
+                        'ключевые слова'    => $keyword,
+                        'категория'         => $category_id,
+                        'текст поста'       => $story
+                    ];
+
+                    // Проверка на валидность полей
+                    $errors = $post->notEmpty($parameters);
+
+                    // Отправка данных и создание нового поста
+                    if ($errors == false) {
+                        $create = $post->create($title, $category_id, $description, $keyword, $story);
+                    }
                 }
 
                 return $this->render('admin/createPost', [
@@ -168,10 +197,10 @@ class AdminController extends Controller
     public function deletePostAll()
     {
         $post = new Post();
-        $arrayPostId = [];
-        $i = 0;
+        $arrayPostId = false;
 
-        if (isset($_POST['submit'])) {
+        if (isset($_POST['submit']) && isset($_POST['checkbox'])) {
+
             $arrayPostId = $_POST['checkbox'];
 
             foreach ($arrayPostId as $item) {

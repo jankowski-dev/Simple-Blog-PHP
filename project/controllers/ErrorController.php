@@ -1,12 +1,15 @@
 <?php
-	namespace Project\Controllers;
-	use \Core\Controller;
-	
-	class ErrorController extends Controller
+
+namespace Project\Controllers;
+
+use \Core\Controller;
+
+class ErrorController extends Controller
+{
+	public function notFound()
 	{
-		public function notFound() {
-			$this->title = 'Страница не найдена';
-			
-			return $this->render('error/notFound');
-		}
+		$this->title = 'Страница не найдена';
+
+		return $this->render('error/notFound');
 	}
+}

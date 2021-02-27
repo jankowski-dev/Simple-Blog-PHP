@@ -35,18 +35,16 @@ body {
     height: 100%;
 }
 
-.wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 100%;
+.button-bottom {
+    padding: 10px 10px 10px 10px;
 }
 
-.content {
-    flex: 1 0 auto;
+.error ul {
+    padding: 50px 0 0 0;
 }
 
-.footer {
-    flex: 0 0 auto;
+.error ul li {
+    color: red;
 }
 
 .red {

@@ -16,9 +16,6 @@
         <a class="nav-link" href="#">Ваша страна: <?php echo $_SESSION['country']; ?> <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/cpanel/create-post/">Создать пост</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="/logout/">Выйти</a>
       </li>
     </ul>
@@ -43,24 +40,20 @@
       <?php foreach ($posts as $post) : ?>
         <tr>
           <th scope="col"><input type="checkbox" name="checkbox[]" value="<?= $post['id']; ?>"></th>
-          <th><?php echo $post['id']; ?></th>
-          <td><?php echo $post['date']; ?></td>
-          <td><a href="/cpanel/edit-post/<?= $post['id']; ?>/"><?php echo $post['title']; ?></a></td>
+          <th><?= $post['id']; ?></th>
+          <td><?= $post['date']; ?></td>
+          <td><a href="/cpanel/edit-post/<?= $post['id']; ?>/"><?= $post['title']; ?></a></td>
           <td><a href="/cpanel/delete-post/<?= $post['id']; ?>/" class="btn btn-light">Удалить</a></td>
-          <td>
-            <?php foreach ($categories as $category) {
-              if ($post['category_id'] == $category['id']) {
-                echo $category['title'];
-                break;
-              }
-            } ?>
-          </td>
+          <td><?= $post['category']; ?></td>
         </tr>
       <?php endforeach; ?>
     </tbody>
 
   </table>
-  <li class="nav-item">
+
+  <div class="button-bottom">
+    <a class="btn btn-primary" href="/cpanel/create-post/">Создать пост</a>
     <button type="submit" name="submit" class="btn btn-primary">Удалить посты</button>
-  </li>
+  </div>
+
 </form>

@@ -26,15 +26,15 @@
 </nav>
 
 <div class="container">
-    <!-- <div class="form-containers-edit"> -->
-    <!-- <div class="form-style"> -->
 
     <?php if ($errors != false) : ?>
-        <ul>
-            <?php foreach ($errors as $error) : ?>
-                <li><?= $error ?></li>
-            <?php endforeach; ?>
-        </ul>
+        <div class="error">
+            <ul>
+                <?php foreach ($errors as $error) : ?>
+                    <li><?= $error ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
     <?php endif; ?>
 
     <div class="margin-top-70"></div>
@@ -90,6 +90,4 @@
 
     <div class="margin-top-70"></div>
 
-    <!-- </div> -->
-    <!-- </div> -->
 </div>
