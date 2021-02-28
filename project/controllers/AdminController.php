@@ -44,10 +44,12 @@ class AdminController extends Controller
                 // Если же пользователь не администратор
             } else {
                 header('Location: /panel/');
+                exit;
             }
         }
         // В ином случаем перенаправляем его на форму
         header('Location: /auth/');
+        exit;
     }
 
 
@@ -111,6 +113,7 @@ class AdminController extends Controller
         }
 
         header('Location: /auth/');
+        exit;
     }
 
 
@@ -169,6 +172,7 @@ class AdminController extends Controller
         }
 
         header('Location: /auth/');
+        exit;
     }
 
 
@@ -184,6 +188,7 @@ class AdminController extends Controller
         $result = $post->delete($arg['id']);
         if ($result) {
             header('Location: /cpanel/');
+            exit;
         }
     }
 
@@ -208,6 +213,8 @@ class AdminController extends Controller
             }
 
             header('Location: /cpanel/');
+            exit;
+
         }
     }
 }

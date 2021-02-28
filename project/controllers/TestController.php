@@ -8,7 +8,13 @@ use \Project\Models\Category;
 
 class TestController extends Controller
 {
-    // Тестовое создание постов
+
+    /********************************
+     * Метод массового создания постов.
+     * Принимает статические данные и циклом
+     * добавлет новые посты в базу
+     ********************************/
+
     public function createPostTest()
     {
         $this->title = 'Тестовое создание поста';
@@ -27,7 +33,7 @@ class TestController extends Controller
                 $title          =  'Тестовый заголовок';
                 $description    =  'Тестовое описание';
                 $keyword        =  'Тестовые, ключевые, слова';
-                $category_id    =  mt_rand(1, 2);
+                $category_id    =  rand(1, 3);
                 $story          =  'Тестовый текст на странице';
 
                 $parameters = [
@@ -43,9 +49,53 @@ class TestController extends Controller
                     $create = $post->create($title, $category_id, $description, $keyword, $story);
                 }
                 header('Location: /cpanel/');
+                exit;
             }
         }
 
         header('Location: /auth/');
+        exit;
+    }
+
+
+    /********************************
+     * Метод массового создания постов.
+     * Принимает статические данные и циклом
+     * добавлет новые посты в базу
+     ********************************/
+
+    public function createCategoryTest()
+    {
+        $this->title = 'Тестовое создание поста';
+        $errors = false;
+        $create = false;
+
+        if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
+            // А если авторизован, и он администратор
+            if ($_SESSION['id'] == 1) {
+
+                $category = new Category();
+
+                // Сохранение поста
+                $title          =  'Тестовый заголовок';
+                $description    =  'Тестовое описание';
+
+                $parameters = [
+                    'заголовок'         => $title,
+                    'описание'          => $description
+                ];
+
+                // Отправка данных и создание нового поста
+                for ($i = 1; $i <= 3; $i++) {
+                    $create = $category->create($title, $description);
+                }
+
+                header('Location: /cpanel/categories/');
+                exit;
+            }
+        }
+
+        header('Location: /auth/');
+        exit;
     }
 }

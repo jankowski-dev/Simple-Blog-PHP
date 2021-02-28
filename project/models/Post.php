@@ -93,7 +93,7 @@ class Post extends Model
 	 * данных из полей формы
 	 ********************************/
 
-	public static function notEmpty($arr)
+	public function notEmpty($arr)
 	{
 		$error = false;
 		foreach ($arr as $key => $value) {
