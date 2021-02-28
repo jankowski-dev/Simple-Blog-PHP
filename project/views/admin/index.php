@@ -54,6 +54,7 @@
   <div class="button-bottom">
     <a class="btn btn-primary" href="/cpanel/create-post/">Создать пост</a>
     <button type="submit" name="submit" class="btn btn-primary">Удалить посты</button>
+    <a class="btn btn-primary" href="/cpanel/create-post-test/">Создать тестовый пост</a>
   </div>
 
 </form>
