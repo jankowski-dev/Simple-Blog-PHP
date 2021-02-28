@@ -103,7 +103,7 @@ class AdminController extends Controller
                 }
 
                 // Загружаем представление
-                return $this->render('admin/editPost', [
+                return $this->render('admin/post/editPost', [
                     'post'        => $postItem,
                     'categories'  => $categories,
                     'errors'      => $errors,
@@ -163,7 +163,7 @@ class AdminController extends Controller
                     }
                 }
 
-                return $this->render('admin/createPost', [
+                return $this->render('admin/post/createPost', [
                     'errors'        => $errors,
                     'categories'    => $categories,
                     'create'        => $create

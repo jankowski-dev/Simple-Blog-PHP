@@ -7,15 +7,32 @@ use \Core\Model;
 class Category extends Model
 {
 
+	/********************************
+	 * Метод получает одну запись.
+	 * Принимает аргументом id записи
+	 ********************************/
+
 	public function getCategoryById($id)
 	{
 		return $this->findOne("SELECT * FROM category WHERE id=$id");
 	}
 
+
+	/********************************
+	 * Метод получает все записи.
+	 * Не принимает аргументов
+	 ********************************/
+
 	public function getCategoryAll()
 	{
 		return $this->findMany("SELECT * FROM category");
 	}
+
+
+	/********************************
+	 * Метод удаляет категорию.
+	 * Принимает аргументом id поста
+	 ********************************/
 
 	public function delete($id)
 	{
@@ -27,6 +44,12 @@ class Category extends Model
 		return $rezult->execute();
 	}
 
+
+	/********************************
+	 * Метод поверяет на валидность.
+	 * Принимает аргументом массив
+	 * данных из полей формы
+	 ********************************/
 
 	public function notEmpty($arr)
 	{
@@ -56,6 +79,7 @@ class Category extends Model
 
 		return $rezult->execute();
 	}
+
 
 	/********************************
 	 * Метод обновляет категорию.

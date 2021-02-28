@@ -8,6 +8,13 @@ use \Project\Models\Category;
 
 class CategoryController extends Controller
 {
+
+    /********************************
+     * Индексный метод категорий.
+     * Проверяет права доступа и
+     * реализует функционал
+     ********************************/
+
     public function index()
     {
         $this->title = 'cPanel: Категории';
@@ -27,7 +34,7 @@ class CategoryController extends Controller
                 $this->deleteCategoryAll();
 
                 // Загружаем представление
-                return $this->render('admin/category', [
+                return $this->render('admin/category/index', [
                     'categories'     => $getCategories
                 ]);
 
@@ -44,9 +51,9 @@ class CategoryController extends Controller
 
 
     /********************************
-     * Создание поста.
+     * Создание категории.
      * Принимает данные из формы и
-     * создает пост
+     * создает категорию
      ********************************/
 
     public function createCategory()
@@ -82,7 +89,7 @@ class CategoryController extends Controller
                     }
                 }
 
-                return $this->render('admin/createCategory', [
+                return $this->render('admin/category/createCategory', [
                     'errors'        => $errors,
                     'create'        => $create
                 ]);
@@ -95,9 +102,9 @@ class CategoryController extends Controller
 
 
     /********************************
-     * Редактирование поста.
+     * Редактирование категории.
      * Принимает данные из формы и
-     * изменяет пост
+     * изменяет категорию
      ********************************/
 
     public function editCategory($arg)
@@ -136,7 +143,7 @@ class CategoryController extends Controller
                 }
 
                 // Загружаем представление
-                return $this->render('admin/editCategory', [
+                return $this->render('admin/category/editCategory', [
                     'category'      => $categoryItem,
                     'errors'        => $errors,
                     'update'        => $update
@@ -147,6 +154,7 @@ class CategoryController extends Controller
         header('Location: /auth/');
         exit;
     }
+
 
     /********************************
      * Одиночное удаление категории.
