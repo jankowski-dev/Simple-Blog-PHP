@@ -57,9 +57,9 @@ class Post extends Model
 	 * с данными из формы
 	 ********************************/
 
-	public function create($title, $category_id, $desc, $keyword, $story)
+	public function create($title, $category_id, $desc, $keyword, $story, $author_id)
 	{
-		$sql = "INSERT post (title, category_id, description, keyword, story) VALUES (:title, :category_id, :desc, :keyword, :story)";
+		$sql = "INSERT post (title, category_id, description, keyword, story, author_id) VALUES (:title, :category_id, :desc, :keyword, :story, :author_id)";
 
 		$rezult = self::$link->prepare($sql);
 		$rezult->bindParam(':title', $title, \PDO::PARAM_STR);
@@ -67,6 +67,7 @@ class Post extends Model
 		$rezult->bindParam(':desc', $desc, \PDO::PARAM_STR);
 		$rezult->bindParam(':keyword', $keyword, \PDO::PARAM_STR);
 		$rezult->bindParam(':story', $story, \PDO::PARAM_STR);
+		$rezult->bindParam(':author_id', $author_id, \PDO::PARAM_STR);
 
 		return $rezult->execute();
 	}

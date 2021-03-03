@@ -13,15 +13,15 @@ return [
 
 	/* Посты */
 	// Список постов
-	new Route('/cpanel/posts/', 'admin', 'index'),
+	new Route('/cpanel/posts/', 'post', 'index'),
 	// Тестовое добавление поста
 	new Route('/cpanel/create-post-test/', 'test', 'createPostTest'),
 	// Удаление поста
-	new Route('/cpanel/delete-post/:id/', 'admin', 'deletePost'),
+	new Route('/cpanel/delete-post/:id/', 'post', 'deletePost'),
 	// Создание нового поста
-	new Route('/cpanel/create-post/', 'admin', 'createPost'),
+	new Route('/cpanel/create-post/', 'post', 'createPost'),
 	// Редактирование поста
-	new Route('/cpanel/edit-post/:id/', 'admin', 'editPost'),
+	new Route('/cpanel/edit-post/:id/', 'post', 'editPost'),
 
 	/* Категории */
 	// Список категорий
@@ -38,6 +38,8 @@ return [
 	/* Пользователи */
 	// Список пользователей
 	new Route('/cpanel/users/', 'user', 'index'),
+	// Страница пользователя
+	new Route('/cpanel/user/:id/', 'user', 'profile'),
 
 
 	/******************************

@@ -8,6 +8,30 @@ class User extends Model
 {
 
     /********************************
+     * Метод получает все записи.
+     * JOIN с таблицой категорий.
+     ********************************/
+
+    public function getUsers()
+    {
+        return $this->findMany("SELECT user.id, user.name, user.reg_date,
+             COUNT(post.id) as posts FROM user JOIN post ON post.author_id = user.id
+             GROUP BY user.id");
+    }
+
+
+    /********************************
+     * Метод количество постов пользователя.
+     * ПРинимает аргументом id пользователя.
+     ********************************/
+
+    public function getCountUserPost($id)
+    {
+        return $this->findOne("SELECT COUNT(*) as count FROM post JOIN user ON user.id = post.author_id WHERE user.id = $id");
+
+    }
+
+    /********************************
      * Метод добавления нового пользователя.
      * Принимает аргументом
      * регистрационные данные
@@ -109,7 +133,7 @@ class User extends Model
         $user = $rezult->fetch();
 
         if ($user) {
-            return $user['user_id'];
+            return $user['id'];
         } else {
             return false;
         }
@@ -126,7 +150,7 @@ class User extends Model
         $userInfoArray = $this->getUserById($userID);
 
         $_SESSION['name']       = $userInfoArray['name'];
-        $_SESSION['id']         = $userInfoArray['user_id'];
+        $_SESSION['id']         = $userInfoArray['id'];
         $_SESSION['email']      = $userInfoArray['email'];
         $_SESSION['country']    = $userInfoArray['country'];
     }
@@ -153,7 +177,7 @@ class User extends Model
 
     public function getUserById($userID)
     {
-        $sql = 'SELECT * FROM user WHERE user_id = :id';
+        $sql = 'SELECT * FROM user WHERE id = :id';
         $rezult = self::$link->prepare($sql);
         $rezult->bindParam(':id', $userID, \PDO::PARAM_STR);
         $rezult->setFetchMode(\PDO::FETCH_ASSOC);

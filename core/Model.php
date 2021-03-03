@@ -26,6 +26,7 @@ class Model
 		return $data;
 	}
 
+
 	// Множественная выборка из базы
 	protected function findMany($query)
 	{

@@ -35,6 +35,7 @@ class TestController extends Controller
                 $keyword        =  'Тестовые, ключевые, слова';
                 $category_id    =  rand(1, 3);
                 $story          =  'Тестовый текст на странице';
+                $author_id      =  $_SESSION['id']; // костыльное решение, нужна доработка
 
                 $parameters = [
                     'заголовок'         => $title,
@@ -45,8 +46,8 @@ class TestController extends Controller
                 ];
 
                 // Отправка данных и создание нового поста
-                for ($i = 1; $i <= 3; $i++) {
-                    $create = $post->create($title, $category_id, $description, $keyword, $story);
+                for ($i = 1; $i <= 1; $i++) {
+                    $create = $post->create($title, $category_id, $description, $keyword, $story, $author_id);
                 }
                 header('Location: /cpanel/');
                 exit;
@@ -86,7 +87,7 @@ class TestController extends Controller
                 ];
 
                 // Отправка данных и создание нового поста
-                for ($i = 1; $i <= 3; $i++) {
+                for ($i = 1; $i <= 1; $i++) {
                     $create = $category->create($title, $description);
                 }
 

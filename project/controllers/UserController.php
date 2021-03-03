@@ -4,10 +4,79 @@ namespace Project\Controllers;
 
 use \Core\Controller;
 use \Project\Models\User;
+use \Project\Models\Group;
+use \Project\Models\Post;
 
 
 class UserController extends Controller
 {
+
+    public static $group;
+
+
+    public function __construct()
+    {
+        self::$group = new Group();
+    }
+
+
+    /********************************
+     * Метод авторизации на сайте.
+     * Принимает данные из формы и
+     * создают сессию для пользователя
+     ********************************/
+
+    public function index()
+    {
+        $this->title = 'cPanel: Пользователи';
+        $errors = false;
+
+        if (self::$group->is_role(1)) {
+
+            $user = new User();
+            $getUsers = $user->getUsers();
+
+            // Загружаем представление
+            return $this->render('admin/user/index', [
+                'users'         => $getUsers
+            ]);
+        }
+
+        // В ином случаем перенаправляем его на форму
+        header('Location: /');
+        exit;
+    }
+
+
+    /********************************
+     * Метод авторизации на сайте.
+     * Принимает данные из формы и
+     * создают сессию для пользователя
+     ********************************/
+
+    public function profile($arg)
+    {
+        $this->title = 'cPanel: Профиль пользователя';
+        $errors = false;
+
+        // Если пользователь авторизован
+        if (self::$group->is_role(1)) {
+
+            $user = new User();
+            $getUser = $user->getUserById($arg['id']);
+            $getCountPost = $user->getCountUserPost($arg['id']);
+
+            // Загружаем представление
+            return $this->render('admin/user/profile', [
+                'user'   => $getUser,
+                'post'   => $getCountPost
+            ]);
+        }
+
+        // В ином случаем перенаправляем его на форму
+        header('Location: /');
+        exit;
+    }
 
     /********************************
      * Метод авторизации на сайте.
@@ -34,6 +103,7 @@ class UserController extends Controller
                 if ($userID !== false) {
                     $user->authUser($userID);
                     header('Location: /cpanel/');
+                    exit;
                 } else {
                     $errors[] = 'Неверные данные для входа';
                 }
@@ -41,6 +111,7 @@ class UserController extends Controller
         } else {
 
             header('Location: /cpanel/');
+            exit;
         }
 
         return $this->render('user/auth', [

@@ -4,10 +4,20 @@ namespace Project\Controllers;
 
 use \Core\Controller;
 use \Project\Models\Category;
+use \Project\Models\Group;
+
 
 
 class CategoryController extends Controller
 {
+
+    public static $group;
+
+
+    public function __construct()
+    {
+        self::$group = new Group();
+    }
 
     /********************************
      * Индексный метод категорий.
@@ -21,31 +31,24 @@ class CategoryController extends Controller
         $errors = false;
 
         // Если пользователь авторизован
-        if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
-            // А если авторизован, и он администратор
-            if ($_SESSION['id'] == 1) {
+        if (self::$group->is_role(1)) {
 
-                $category = new Category();
+            $category = new Category();
 
-                // Получаем список всех категорий
-                $getCategories = $category->getCategoryAll();
+            // Получаем список всех категорий
+            $getCategories = $category->getCategoryAll();
 
-                // Массовое удаление постов
-                $this->deleteCategoryAll();
+            // Массовое удаление постов
+            $this->deleteCategoryAll();
 
-                // Загружаем представление
-                return $this->render('admin/category/index', [
-                    'categories'     => $getCategories
-                ]);
-
-                // Если же пользователь не администратор
-            } else {
-                header('Location: /panel/');
-                exit;
-            }
+            // Загружаем представление
+            return $this->render('admin/category/index', [
+                'categories'     => $getCategories
+            ]);
         }
+
         // В ином случаем перенаправляем его на форму
-        header('Location: /auth/');
+        header('Location: /');
         exit;
     }
 
@@ -62,38 +65,35 @@ class CategoryController extends Controller
         $errors = false;
         $create = false;
 
-        if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
-            // А если авторизован, и он администратор
-            if ($_SESSION['id'] == 1) {
+        if (self::$group->is_role(1)) {
 
-                $category = new Category();
-                // $categories = $category->getCategoryAll();
+            $category = new Category();
+            // $categories = $category->getCategoryAll();
 
-                // Сохранение поста
-                if (isset($_POST['submit'])) {
+            // Сохранение поста
+            if (isset($_POST['submit'])) {
 
-                    $title          =  $_POST['title'];
-                    $description    =  $_POST['description'];
+                $title          =  $_POST['title'];
+                $description    =  $_POST['description'];
 
-                    $parameters = [
-                        'заголовок'         => $title,
-                        'описание'          => $description,
-                    ];
+                $parameters = [
+                    'заголовок'         => $title,
+                    'описание'          => $description,
+                ];
 
-                    // Проверка на валидность полей
-                    $errors = $category->notEmpty($parameters);
+                // Проверка на валидность полей
+                $errors = $category->notEmpty($parameters);
 
-                    // Отправка данных и создание нового поста
-                    if ($errors == false) {
-                        $create = $category->create($title, $description);
-                    }
+                // Отправка данных и создание нового поста
+                if ($errors == false) {
+                    $create = $category->create($title, $description);
                 }
-
-                return $this->render('admin/category/createCategory', [
-                    'errors'        => $errors,
-                    'create'        => $create
-                ]);
             }
+
+            return $this->render('admin/category/createCategory', [
+                'errors'        => $errors,
+                'create'        => $create
+            ]);
         }
 
         header('Location: /auth/');
@@ -114,51 +114,48 @@ class CategoryController extends Controller
         $update = false;
 
         // Пользователь авторизован?
-        if (isset($_SESSION['id']) && $_SESSION['id'] !== false) {
-            // А если авторизован, и он администратор
-            if ($_SESSION['id'] == 1) {
+        if (self::$group->is_role(1)) {
 
-                // Вытаскиваем данные
-                $category = new Category();
-                $categoryItem = $category->getCategoryById($arg['id']);
+            // Вытаскиваем данные
+            $category = new Category();
+            $categoryItem = $category->getCategoryById($arg['id']);
 
-                // Сохранение поста
-                if (isset($_POST['submit'])) {
+            // Сохранение поста
+            if (isset($_POST['submit'])) {
 
-                    $title          =  $_POST['title'];
-                    $description    =  $_POST['description'];
+                $title          =  $_POST['title'];
+                $description    =  $_POST['description'];
 
-                    $parameters = [
-                        'заголовок'         => $title,
-                        'описание'          => $description
-                    ];
+                $parameters = [
+                    'заголовок'         => $title,
+                    'описание'          => $description
+                ];
 
-                    // Проверка на валидность полей
-                    $errors = $category->notEmpty($parameters);
+                // Проверка на валидность полей
+                $errors = $category->notEmpty($parameters);
 
-                    // Отправляем отредактированные данные в базу
-                    if ($errors == false) {
-                        $update = $category->update($arg['id'], $title, $description);
-                    }
+                // Отправляем отредактированные данные в базу
+                if ($errors == false) {
+                    $update = $category->update($arg['id'], $title, $description);
                 }
-
-                // Загружаем представление
-                return $this->render('admin/category/editCategory', [
-                    'category'      => $categoryItem,
-                    'errors'        => $errors,
-                    'update'        => $update
-                ]);
             }
+
+            // Загружаем представление
+            return $this->render('admin/category/editCategory', [
+                'category'      => $categoryItem,
+                'errors'        => $errors,
+                'update'        => $update
+            ]);
         }
 
-        header('Location: /auth/');
+        header('Location: /');
         exit;
     }
 
 
     /********************************
      * Одиночное удаление категории.
-     * Принимает аргументом id категории и
+     * Принимает аргументом id категории и  --------   Удаление только с правами
      * удаляет
      ********************************/
 
@@ -175,7 +172,7 @@ class CategoryController extends Controller
 
     /********************************
      * Массовое удаление категорий.
-     * Принимает данные из checkbox,
+     * Принимает данные из checkbox,  --------   Удаление только с правами
      * и циклом удаляет категории
      ********************************/
 
