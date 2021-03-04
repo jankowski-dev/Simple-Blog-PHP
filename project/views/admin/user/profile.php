@@ -7,7 +7,7 @@
     Имя: <?= $user['name']; ?><br>
     Email: <?= $user['email']; ?><br>
     Страна: <?= $user['country']; ?><br>
-    Кол-во постов: <?= $post['count'] ?><br>
+    Кол-во постов: <?= $user['post_num']; ?><br>
     Кол-во комментариев: <?= $user['comm_num']; ?><br>
     </div>
   </div>

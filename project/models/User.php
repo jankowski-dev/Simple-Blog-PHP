@@ -14,10 +14,15 @@ class User extends Model
 
     public function getUsers()
     {
-        return $this->findMany("SELECT user.id, user.name, user.reg_date,
-             COUNT(post.id) as posts FROM user JOIN post ON post.author_id = user.id
-             GROUP BY user.id");
+        return $this->findMany("SELECT id, name, reg_date, post_num FROM user");
     }
+
+    // public function getUsers()
+    // {
+    //     return $this->findMany("SELECT user.id, user.name, user.reg_date,
+    //          COUNT(post.id) as posts FROM user JOIN post ON post.author_id = user.id
+    //          GROUP BY user.id");
+    // }
 
 
     /********************************
@@ -28,7 +33,6 @@ class User extends Model
     public function getCountUserPost($id)
     {
         return $this->findOne("SELECT COUNT(*) as count FROM post JOIN user ON user.id = post.author_id WHERE user.id = $id");
-
     }
 
     /********************************
@@ -39,13 +43,16 @@ class User extends Model
 
     public function register($name, $email, $password, $country)
     {
-        $sql = 'INSERT INTO user (name, email, password, country) VALUES (:name, :email, :password, :country)';
+        $sql = 'INSERT INTO user (name, email, password, country, group_id) VALUES (:name, :email, :password, :country, :group)';
+
+        $groupDefault = 3;
 
         $rezult = self::$link->prepare($sql);
         $rezult->bindParam(':name', $name, \PDO::PARAM_STR);
         $rezult->bindParam(':email', $email, \PDO::PARAM_STR);
         $rezult->bindParam(':password', $password, \PDO::PARAM_STR);
         $rezult->bindParam(':country', $country, \PDO::PARAM_STR);
+        $rezult->bindParam(':group', $groupDefault, \PDO::PARAM_STR);
 
         return $rezult->execute();
     }
@@ -216,5 +223,33 @@ class User extends Model
             return false;
         }
         return true;
+    }
+
+
+    /********************************
+     * Метод обновления кол-ва постов пользователя.
+     * Принимает аргумент 1 или 0 в зависимости от назначения.
+     ********************************/
+
+    public function countPost($arg)
+    {
+        if (isset($_SESSION['id'])) {
+
+            $userID = $_SESSION['id'];
+            $count = $this->findOne("SELECT post_num FROM user WHERE id = " . $userID);
+
+            if ($arg) {
+                $countPost = $count['post_num'] + 1;
+            } else {
+                $countPost = $count['post_num'] - 1;
+            }
+
+            $result = $this->findOne("UPDATE user SET post_num = $countPost WHERE id = $userID");
+
+            if ($result) {
+                return true;
+            }
+            return false;
+        }
     }
 }

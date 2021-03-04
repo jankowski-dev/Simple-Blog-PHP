@@ -12,21 +12,28 @@ class Group extends Model
      * Аргументом является уровень прав
      ********************************/
 
-    public function is_role($level)
+    public static function is_role($level)
     {
-        // ID сессии
-        $sessionID = intval($_SESSION['id']);
-        // Получение id группы пользователя
-        $user = $this->findOne("SELECT group_id FROM user WHERE id = $sessionID");
-        // Преобразование типа
-        $groupID = intval($user['group_id']);
+        $model = new Model();
 
-        // Если уровень группы выше или равен
-        if ($groupID <= $level) {
-            return true;
-            // Иначе доступ закрыт
-        } else {
+        // Если сессия существует
+        if (isset($_SESSION['id'])) {
+
+            // ID сессии
+            $sessionID = intval($_SESSION['id']);
+
+            // Запрос в базу на получение группы
+            $user = $model->findOne("SELECT group_id FROM user WHERE id = $sessionID");
+
+            // Преобразование типа
+            $groupID = intval($user['group_id']);
+
+            // Если уровень группы выше или равен
+            if ($groupID <= $level) {
+                return true;
+            }
             return false;
         }
+        return false;
     }
 }

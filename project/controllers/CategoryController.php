@@ -6,13 +6,16 @@ use \Core\Controller;
 use \Project\Models\Category;
 use \Project\Models\Group;
 
-
-
 class CategoryController extends Controller
 {
-
     public static $group;
 
+
+    /********************************
+     * Конструктор.
+     * Создаем экземпляр класса Group
+     * для проверки прав
+     ********************************/
 
     public function __construct()
     {
@@ -31,7 +34,7 @@ class CategoryController extends Controller
         $errors = false;
 
         // Если пользователь авторизован
-        if (self::$group->is_role(1)) {
+        if (Group::is_role(1)) {
 
             $category = new Category();
 
@@ -47,7 +50,7 @@ class CategoryController extends Controller
             ]);
         }
 
-        // В ином случаем перенаправляем его на форму
+        // В ином случаем перенаправляем его
         header('Location: /');
         exit;
     }
@@ -65,7 +68,7 @@ class CategoryController extends Controller
         $errors = false;
         $create = false;
 
-        if (self::$group->is_role(1)) {
+        if (Group::is_role(1)) {
 
             $category = new Category();
             // $categories = $category->getCategoryAll();
@@ -114,7 +117,7 @@ class CategoryController extends Controller
         $update = false;
 
         // Пользователь авторизован?
-        if (self::$group->is_role(1)) {
+        if (Group::is_role(1)) {
 
             // Вытаскиваем данные
             $category = new Category();

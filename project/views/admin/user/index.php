@@ -20,7 +20,7 @@
           <th><?= $user['id']; ?></th>
           <td><?= $user['reg_date']; ?></td>
           <td><a href="/cpanel/user/<?= $user['id']; ?>/"><?= $user['name']; ?></a></td>
-          <td><?= $user['posts']; ?></td>
+          <td><?= $user['post_num']; ?></td>
         </tr>
       <?php endforeach; ?>
     </tbody>

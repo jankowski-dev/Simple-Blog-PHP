@@ -10,14 +10,6 @@ use \Project\Models\Category;
 class AdminController extends Controller
 {
 
-    public static $group;
-
-
-    public function __construct()
-    {
-        self::$group = new Group();
-    }
-
     /********************************
      * Индексный метод админпанели.
      * Проверяет права доступа и
@@ -30,8 +22,7 @@ class AdminController extends Controller
         $errors = false;
 
         // Если пользователь авторизован
-        if (self::$group->is_role(1)) {
-
+        if (Group::is_role(1)) {
 
             // Загружаем представление
             return $this->render('admin/index', []);

@@ -4,19 +4,12 @@ namespace Project\Controllers;
 
 use \Core\Controller;
 use \Project\Models\Post;
+use \Project\Models\User;
 use \Project\Models\Group;
 use \Project\Models\Category;
 
 class PostController extends Controller
 {
-    public static $group;
-
-
-    public function __construct()
-    {
-        self::$group = new Group();
-    }
-
 
     /********************************
      * Индексный метод админпанели.
@@ -29,7 +22,7 @@ class PostController extends Controller
         $this->title = 'cPanel: Посты';
         $errors = false;
 
-        if (self::$group->is_role(1)) {
+        if (Group::is_role(1)) {
 
             $post = new Post();
             $category = new Category();
@@ -48,7 +41,7 @@ class PostController extends Controller
             ]);
         }
         // В ином случаем перенаправляем его на форму
-        header('Location: /auth/');
+        header('Location: /');
         exit;
     }
 
@@ -66,7 +59,7 @@ class PostController extends Controller
         $update = false;
 
         // Пользователь авторизован?
-        if (self::$group->is_role(1)) {
+        if (Group::is_role(1)) {
 
             // Вытаскиваем данные
             $post = new Post();
@@ -126,10 +119,11 @@ class PostController extends Controller
         $errors = false;
         $create = false;
 
-        if (self::$group->is_role(1)) {
+        if (Group::is_role(1)) {
 
-            $post = new Post();
-            $category = new Category();
+            $user       = new User();
+            $post       = new Post();
+            $category   = new Category();
             $categories = $category->getCategoryAll();
 
             // Сохранение поста
@@ -156,6 +150,9 @@ class PostController extends Controller
                 // Отправка данных и создание нового поста
                 if ($errors == false) {
                     $create = $post->create($title, $category_id, $description, $keyword, $story, $author_id);
+                    if ($create !== false) {
+                        $user->countPost(1);
+                    }
                 }
             }
 
@@ -180,8 +177,11 @@ class PostController extends Controller
     public function deletePost($arg)
     {
         $post = new Post();
-        $result = $post->delete($arg['id']);
-        if ($result) {
+        $user       = new User();
+        $delete = $post->delete($arg['id']);
+
+        if ($delete) {
+            $user->countPost(0);
             header('Location: /cpanel/posts/');
             exit;
         }
@@ -196,15 +196,19 @@ class PostController extends Controller
 
     public function deletePostAll()
     {
-        $post = new Post();
-        $arrayPostId = false;
+        $post           = new Post();
+        $user           = new User();
+        $arrayPostId    = false;
 
         if (isset($_POST['submit']) && isset($_POST['checkbox'])) {
 
             $arrayPostId = $_POST['checkbox'];
 
             foreach ($arrayPostId as $item) {
-                $result = $post->delete($item);
+                $delete = $post->delete($item);
+                if ($delete !== false) {
+                    $user->countPost(0);
+                }
             }
 
             header('Location: /cpanel/posts/');

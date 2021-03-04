@@ -11,15 +11,6 @@ use \Project\Models\Post;
 class UserController extends Controller
 {
 
-    public static $group;
-
-
-    public function __construct()
-    {
-        self::$group = new Group();
-    }
-
-
     /********************************
      * Метод авторизации на сайте.
      * Принимает данные из формы и
@@ -31,7 +22,7 @@ class UserController extends Controller
         $this->title = 'cPanel: Пользователи';
         $errors = false;
 
-        if (self::$group->is_role(1)) {
+        if (Group::is_role(1)) {
 
             $user = new User();
             $getUsers = $user->getUsers();
@@ -60,16 +51,14 @@ class UserController extends Controller
         $errors = false;
 
         // Если пользователь авторизован
-        if (self::$group->is_role(1)) {
+        if (Group::is_role(1)) {
 
             $user = new User();
             $getUser = $user->getUserById($arg['id']);
-            $getCountPost = $user->getCountUserPost($arg['id']);
 
             // Загружаем представление
             return $this->render('admin/user/profile', [
-                'user'   => $getUser,
-                'post'   => $getCountPost
+                'user'   => $getUser
             ]);
         }
 
@@ -87,30 +76,31 @@ class UserController extends Controller
     public function auth()
     {
         $this->title = 'Форма авторизации';
-        $errors = [];
+        $errors = false;
         $user = new User;
 
         if ($user->isGuest()) {
 
-            if ((isset($_POST['userEmail']) && !empty($_POST['userEmail']))
-                && (isset($_POST['userPassword']) && !empty($_POST['userPassword']))
-            ) {
+            if (!empty($_POST['userEmail']) && !empty($_POST['userPassword'])) {
+
                 $email = $_POST['userEmail'];
                 $password = $_POST['userPassword'];
 
                 $userID = $user->checkUser($email, $password);
 
                 if ($userID !== false) {
+
                     $user->authUser($userID);
-                    header('Location: /cpanel/');
+
+                    header('Location: /');
                     exit;
-                } else {
-                    $errors[] = 'Неверные данные для входа';
                 }
+
+                $errors[] = 'Неверные данные для входа';
             }
         } else {
 
-            header('Location: /cpanel/');
+            header('Location: /');
             exit;
         }
 
