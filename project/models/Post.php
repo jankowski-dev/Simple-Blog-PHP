@@ -81,10 +81,8 @@ class Post extends Model
 	public function delete($id)
 	{
 		$sql = "DELETE FROM post WHERE id = :id";
-
 		$rezult = self::$link->prepare($sql);
 		$rezult->bindParam(':id', $id, \PDO::PARAM_STR);
-
 		return $rezult->execute();
 	}
 

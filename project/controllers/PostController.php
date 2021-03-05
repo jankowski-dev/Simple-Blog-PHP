@@ -10,6 +10,17 @@ use \Project\Models\Category;
 
 class PostController extends Controller
 {
+    public $post;
+    public $user;
+    public $errors = false;
+    public $message = false;
+
+    public function __construct()
+    {
+        $this->post = new Post();
+        $this->user = new User();
+    }
+
 
     /********************************
      * Индексный метод админпанели.
@@ -31,13 +42,15 @@ class PostController extends Controller
             $getPosts = $post->getPostAll();
             $getCategories = $category->getCategoryAll();
 
-            // Массовое удаление постов
-            $this->deletePostAll();
+            // Удаление постов
+            $this->deletePost();
 
             // Загружаем представление
             return $this->render('admin/post/index', [
                 'posts'         => $getPosts,
-                'categories'    => $getCategories
+                'categories'    => $getCategories,
+                'messages'      => $this->message
+
             ]);
         }
         // В ином случаем перенаправляем его на форму
@@ -150,9 +163,6 @@ class PostController extends Controller
                 // Отправка данных и создание нового поста
                 if ($errors == false) {
                     $create = $post->create($title, $category_id, $description, $keyword, $story, $author_id);
-                    if ($create !== false) {
-                        $user->countPost(1);
-                    }
                 }
             }
 
@@ -169,48 +179,17 @@ class PostController extends Controller
 
 
     /********************************
-     * Одиночное удаление поста.
-     * Принимает аргументом id поста и  --------   Удаление только с правами
-     * удаляет
+     * Удалние постов
      ********************************/
 
-    public function deletePost($arg)
+    public function deletePost()
     {
-        $post = new Post();
-        $user       = new User();
-        $delete = $post->delete($arg['id']);
+        $subDelete = $_POST['subDelete'] ?? false;
 
-        if ($delete) {
-            $user->countPost(0);
-            header('Location: /cpanel/posts/');
-            exit;
-        }
-    }
-
-
-    /********************************
-     * Массовое удаление постов.
-     * Принимает данные из checkbox,  --------   Удаление только с правами
-     * и циклом удаляет посты
-     ********************************/
-
-    public function deletePostAll()
-    {
-        $post           = new Post();
-        $user           = new User();
-        $arrayPostId    = false;
-
-        if (isset($_POST['submit']) && isset($_POST['checkbox'])) {
-
-            $arrayPostId = $_POST['checkbox'];
-
-            foreach ($arrayPostId as $item) {
-                $delete = $post->delete($item);
-                if ($delete !== false) {
-                    $user->countPost(0);
-                }
+        if ($subDelete) {
+            foreach ($subDelete as $item) {
+                $this->post->delete($item);
             }
-
             header('Location: /cpanel/posts/');
             exit;
         }
