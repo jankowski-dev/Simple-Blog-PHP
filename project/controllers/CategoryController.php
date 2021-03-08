@@ -13,7 +13,6 @@ class CategoryController extends Controller
     public $errors  = false;
     public $create = false;
     public $update = false;
-    public $message = false;
 
     public function __construct()
     {

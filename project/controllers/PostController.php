@@ -15,7 +15,6 @@ class PostController extends Controller
     public $errors  = false;
     public $update  = false;
     public $create  = false;
-    public $message = false;
 
     public function __construct()
     {
