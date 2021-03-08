@@ -12,7 +12,7 @@ class Post extends Model
 	 * JOIN с таблицой категорий.
 	 ********************************/
 
-	public function getPostAll()
+	public function getPosts()
 	{
 		return $this->findMany("SELECT post.id, post.title, post.date, category.title as category FROM post JOIN category ON category.id = post.category_id ORDER BY post.id;");
 	}
@@ -30,46 +30,46 @@ class Post extends Model
 
 
 	/********************************
-	 * Метод обновляет пост.
-	 * Принимает аргументом переменные
-	 * с данными из формы
+	 * Метод делает запись в базу данных.
+	 * Аргументом принимает массив с данными
 	 ********************************/
 
-	public function update($id, $title, $category_id, $desc, $keyword, $story)
+	public function create($data)
 	{
-		$sql = "UPDATE post SET title = :title, category_id = :category_id, description = :desc, keyword = :keyword, story = :story WHERE id = :id";
 
-		$rezult = self::$link->prepare($sql);
-		$rezult->bindParam(':id', $id, \PDO::PARAM_STR);
-		$rezult->bindParam(':title', $title, \PDO::PARAM_STR);
-		$rezult->bindParam(':category_id', $category_id, \PDO::PARAM_STR);
-		$rezult->bindParam(':desc', $desc, \PDO::PARAM_STR);
-		$rezult->bindParam(':keyword', $keyword, \PDO::PARAM_STR);
-		$rezult->bindParam(':story', $story, \PDO::PARAM_STR);
+		$sql = "INSERT post (title, category_id, description, keyword, story, author_id) VALUES (:title, :category_id, :desc, :keyword, :story, :author_id)";
 
-		return $rezult->execute();
+		$result = self::$link->prepare($sql);
+		$result->bindParam(':title', $data['заголовок'], \PDO::PARAM_STR);
+		$result->bindParam(':category_id', $data['категория'], \PDO::PARAM_STR);
+		$result->bindParam(':desc', $data['описание'], \PDO::PARAM_STR);
+		$result->bindParam(':keyword', $data['ключевые слова'], \PDO::PARAM_STR);
+		$result->bindParam(':story', $data['текст поста'], \PDO::PARAM_STR);
+		$result->bindParam(':author_id', $data['автор'], \PDO::PARAM_STR);
+
+		return $result->execute();
 	}
 
 
 	/********************************
-	 * Метод создает пост.
-	 * Принимает аргументом переменные
-	 * с данными из формы
+	 * Метод обновляет пост.
+	 * Принимает аргументом id поста
+	 * и массив данных
 	 ********************************/
 
-	public function create($title, $category_id, $desc, $keyword, $story, $author_id)
+	public function update($id, $data)
 	{
-		$sql = "INSERT post (title, category_id, description, keyword, story, author_id) VALUES (:title, :category_id, :desc, :keyword, :story, :author_id)";
+		$sql = "UPDATE post SET title = :title, category_id = :category_id, description = :desc, keyword = :keyword, story = :story WHERE id = :id";
 
-		$rezult = self::$link->prepare($sql);
-		$rezult->bindParam(':title', $title, \PDO::PARAM_STR);
-		$rezult->bindParam(':category_id', $category_id, \PDO::PARAM_STR);
-		$rezult->bindParam(':desc', $desc, \PDO::PARAM_STR);
-		$rezult->bindParam(':keyword', $keyword, \PDO::PARAM_STR);
-		$rezult->bindParam(':story', $story, \PDO::PARAM_STR);
-		$rezult->bindParam(':author_id', $author_id, \PDO::PARAM_STR);
+		$result = self::$link->prepare($sql);
+		$result->bindParam(':id', $id, \PDO::PARAM_STR);
+		$result->bindParam(':title', $data['заголовок'], \PDO::PARAM_STR);
+		$result->bindParam(':category_id', $data['категория'], \PDO::PARAM_STR);
+		$result->bindParam(':desc', $data['описание'], \PDO::PARAM_STR);
+		$result->bindParam(':keyword', $data['ключевые слова'], \PDO::PARAM_STR);
+		$result->bindParam(':story', $data['текст поста'], \PDO::PARAM_STR);
 
-		return $rezult->execute();
+		return $result->execute();
 	}
 
 
@@ -88,12 +88,45 @@ class Post extends Model
 
 
 	/********************************
+	 * Метод считывает данные из формы.
+	 * Не принимает аргументов и возвращает
+	 * массив
+	 ********************************/
+
+	public function getData()
+	{
+		if (isset($_POST['submit'])) {
+
+			$title          =  $_POST['title'];
+			$description    =  $_POST['description'];
+			$keyword        =  $_POST['keyword'];
+			$category_id    =  $_POST['category_id'];
+			$story          =  $_POST['story'];
+			$author_id      =  $_SESSION['id'];
+
+			$data = [
+				'заголовок'         => $title,
+				'описание'          => $description,
+				'ключевые слова'    => $keyword,
+				'категория'         => $category_id,
+				'текст поста'       => $story,
+				'автор' 			=> $author_id
+			];
+
+			return $data;
+		}
+
+		return false;
+	}
+
+
+	/********************************
 	 * Метод поверяет на валидность.
 	 * Принимает аргументом массив
 	 * данных из полей формы
 	 ********************************/
 
-	public function notEmpty($arr)
+	public function valPost($arr)
 	{
 		$error = false;
 		foreach ($arr as $key => $value) {

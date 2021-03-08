@@ -23,43 +23,9 @@ class Category extends Model
 	 * Не принимает аргументов
 	 ********************************/
 
-	public function getCategoryAll()
+	public function getCategories()
 	{
 		return $this->findMany("SELECT * FROM category");
-	}
-
-
-	/********************************
-	 * Метод удаляет категорию.
-	 * Принимает аргументом id поста
-	 ********************************/
-
-	public function delete($id)
-	{
-		$sql = "DELETE FROM category WHERE id = :id";
-
-		$rezult = self::$link->prepare($sql);
-		$rezult->bindParam(':id', $id, \PDO::PARAM_STR);
-
-		return $rezult->execute();
-	}
-
-
-	/********************************
-	 * Метод поверяет на валидность.
-	 * Принимает аргументом массив
-	 * данных из полей формы
-	 ********************************/
-
-	public function notEmpty($arr)
-	{
-		$error = false;
-		foreach ($arr as $key => $value) {
-			if (empty($arr[$key])) {
-				$error[] = 'Поле ' . '<b>' . $key . '</b>' . ' не может быть пустым!';
-			}
-		}
-		return $error;
 	}
 
 
@@ -69,13 +35,13 @@ class Category extends Model
 	 * с данными из формы
 	 ********************************/
 
-	public function create($title, $desc)
+	public function create($data)
 	{
 		$sql = "INSERT category (title, description) VALUES (:title, :desc)";
 
 		$rezult = self::$link->prepare($sql);
-		$rezult->bindParam(':title', $title, \PDO::PARAM_STR);
-		$rezult->bindParam(':desc', $desc, \PDO::PARAM_STR);
+		$rezult->bindParam(':title', $data['заголовок'], \PDO::PARAM_STR);
+		$rezult->bindParam(':desc', $data['описание'], \PDO::PARAM_STR);
 
 		return $rezult->execute();
 	}
@@ -87,15 +53,73 @@ class Category extends Model
 	 * с данными из формы
 	 ********************************/
 
-	public function update($id, $title, $desc)
+	public function update($id, $data)
 	{
 		$sql = "UPDATE category SET title = :title, description = :desc WHERE id = :id";
 
 		$rezult = self::$link->prepare($sql);
 		$rezult->bindParam(':id', $id, \PDO::PARAM_STR);
-		$rezult->bindParam(':title', $title, \PDO::PARAM_STR);
-		$rezult->bindParam(':desc', $desc, \PDO::PARAM_STR);
+		$rezult->bindParam(':title', $data['заголовок'], \PDO::PARAM_STR);
+		$rezult->bindParam(':desc', $data['описание'], \PDO::PARAM_STR);
 
 		return $rezult->execute();
+	}
+
+
+	/********************************
+	 * Метод удаляет категорию из базы.
+	 * Принимает аргументом id категории
+	 ********************************/
+
+	public function delete($id)
+	{
+		$sql = "DELETE FROM category WHERE id = :id";
+		$rezult = self::$link->prepare($sql);
+		$rezult->bindParam(':id', $id, \PDO::PARAM_STR);
+		return $rezult->execute();
+	}
+
+
+	/********************************
+	 * Метод считывает данные из формы.
+	 * Не принимает аргументов и возвращает
+	 * массив
+	 ********************************/
+
+	public function getData()
+	{
+		if (isset($_POST['submit'])) {
+
+			$title          =  $_POST['title'];
+			$description    =  $_POST['description'];
+
+			$data = [
+				'заголовок'    => $title,
+				'описание'     => $description,
+			];
+
+			cast_print($data);
+
+			return $data;
+		}
+		return false;
+	}
+
+
+	/********************************
+	 * Метод поверяет на валидность.
+	 * Принимает аргументом массив
+	 * данных из полей формы
+	 ********************************/
+
+	public function valCategory($arr)
+	{
+		$error = false;
+		foreach ($arr as $key => $value) {
+			if (empty($arr[$key])) {
+				$error[] = 'Поле ' . '<b>' . $key . '</b>' . ' не может быть пустым!';
+			}
+		}
+		return $error;
 	}
 }

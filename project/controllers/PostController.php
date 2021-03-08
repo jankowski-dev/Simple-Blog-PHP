@@ -4,116 +4,102 @@ namespace Project\Controllers;
 
 use \Core\Controller;
 use \Project\Models\Post;
-use \Project\Models\User;
 use \Project\Models\Group;
 use \Project\Models\Category;
 
 class PostController extends Controller
 {
     public $post;
-    public $user;
-    public $errors = false;
+    public $category;
+
+    public $errors  = false;
+    public $update  = false;
+    public $create  = false;
     public $message = false;
 
     public function __construct()
     {
-        $this->post = new Post();
-        $this->user = new User();
+        $this->post     = new Post();
+        $this->category = new Category();
     }
 
 
     /********************************
-     * Индексный метод админпанели.
+     * Индексный метод.
      * Проверяет права доступа и
      * реализует функционал
      ********************************/
 
     public function index()
     {
+        // Тайтл страницы
         $this->title = 'cPanel: Посты';
-        $errors = false;
 
+        // Проверка прав на действия
         if (Group::is_role(1)) {
 
-            $post = new Post();
-            $category = new Category();
-
-            // Получаем список всех постов и категорий
-            $getPosts = $post->getPostAll();
-            $getCategories = $category->getCategoryAll();
+            // Получаем список всех постов
+            $getPosts = $this->post->getPosts();
 
             // Удаление постов
             $this->deletePost();
 
             // Загружаем представление
             return $this->render('admin/post/index', [
-                'posts'         => $getPosts,
-                'categories'    => $getCategories,
-                'messages'      => $this->message
-
+                'posts'         => $getPosts
             ]);
         }
-        // В ином случаем перенаправляем его на форму
+
+        // В ином случаем перенаправляем
         header('Location: /');
         exit;
     }
 
 
     /********************************
-     * Редактирование поста.
-     * Принимает данные из формы и
-     * изменяет пост
+     * Метод редактирования поста.
+     * Не принимает аргументов
      ********************************/
 
     public function editPost($arg)
     {
         $this->title = 'cPanel: Редактирование поста';
-        $errors = false;
-        $update = false;
 
-        // Пользователь авторизован?
+        // Проверка прав на действия
         if (Group::is_role(1)) {
 
-            // Вытаскиваем данные
-            $post = new Post();
-            $category = new Category();
-            $postItem = $post->getPostById($arg['id']);
-            $categories = $category->getCategoryAll();
+            // Получение данных поста
+            $postItem = $this->post->getPostById($arg['id']);
 
-            // Сохранение поста
-            if (isset($_POST['submit'])) {
+            // Получение списка категорий
+            $categories = $this->category->getCategories();
 
-                $title          =  $_POST['title'];
-                $description    =  $_POST['description'];
-                $keyword        =  $_POST['keyword'];
-                $category_id    =  $_POST['category_id'];
-                $story          =  $_POST['story'];
+            // Транспартируем данные из формы
+            $data = $this->post->getData();
 
-                $parameters = [
-                    'заголовок'         => $title,
-                    'описание'          => $description,
-                    'ключевые слова'    => $keyword,
-                    'категория'         => $category_id,
-                    'текст поста'       => $story
-                ];
+            // Если данные пришли из формы
+            if ($data) {
 
-                // Проверка на валидность полей
-                $errors = $post->notEmpty($parameters);
+                // Проверка данных из формы
+                $this->errors = $this->post->valPost($data);
 
-                // Отправляем отредактированные данные в базу
-                if ($errors == false) {
-                    $update = $post->update($arg['id'], $title, $category_id, $description, $keyword, $story);
+                // Проверка данных на ошибки
+                if (!$this->errors) {
+
+                    // Запись данных в базу
+                    $this->update = $this->post->update($arg['id'], $data);
                 }
             }
-
-            // Загружаем представление
-            return $this->render('admin/post/editPost', [
-                'post'        => $postItem,
-                'categories'  => $categories,
-                'errors'      => $errors,
-                'update'      => $update
-            ]);
         }
+
+        // Загружаем представление
+        return $this->render('admin/post/editPost', [
+            'post'        => $postItem,
+            'categories'  => $categories,
+            'errors'      => $this->errors,
+            'update'      => $this->update
+        ]);
+
 
         header('Location: /auth/');
         exit;
@@ -121,65 +107,51 @@ class PostController extends Controller
 
 
     /********************************
-     * Создание поста.
-     * Принимает данные из формы и
-     * создает пост
+     * Метод создание поста.
+     * Не принимает аргументов
      ********************************/
 
     public function createPost()
     {
+        // Тайтл страницы
         $this->title = 'cPanel: Создание поста';
-        $errors = false;
-        $create = false;
 
+        // Проверка прав на действия
         if (Group::is_role(1)) {
 
-            $user       = new User();
-            $post       = new Post();
-            $category   = new Category();
-            $categories = $category->getCategoryAll();
+            // Получение списка категорий
+            $categories = $this->category->getCategories();
 
-            // Сохранение поста
-            if (isset($_POST['submit'])) {
+            // Получение данных из формы
+            $data = $this->post->getData();
 
-                $title          =  $_POST['title'];
-                $description    =  $_POST['description'];
-                $keyword        =  $_POST['keyword'];
-                $category_id    =  $_POST['category_id'];
-                $story          =  $_POST['story'];
-                $author_id      =  $_SESSION['id'];
+            // Проверяем на соответствие и ошибки
+            if ($data) {
+                $this->errors = $this->post->valPost($data);
 
-                $parameters = [
-                    'заголовок'         => $title,
-                    'описание'          => $description,
-                    'ключевые слова'    => $keyword,
-                    'категория'         => $category_id,
-                    'текст поста'       => $story
-                ];
-
-                // Проверка на валидность полей
-                $errors = $post->notEmpty($parameters);
-
-                // Отправка данных и создание нового поста
-                if ($errors == false) {
-                    $create = $post->create($title, $category_id, $description, $keyword, $story, $author_id);
+                // Если ошибок нет, записываем данные в базу
+                if (!$this->errors) {
+                    $this->create = $this->post->create($data);
                 }
             }
 
+            // Загрузка представления
             return $this->render('admin/post/createPost', [
-                'errors'        => $errors,
                 'categories'    => $categories,
-                'create'        => $create
+                'errors'        => $this->errors,
+                'create'        => $this->create
             ]);
         }
 
+        // В ином случаем перенаправляем
         header('Location: /auth/');
         exit;
     }
 
 
     /********************************
-     * Удалние постов
+     * Метод удаления постов.
+     * Не принимает аргументов
      ********************************/
 
     public function deletePost()

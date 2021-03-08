@@ -15,10 +15,10 @@
     <tbody>
       <?php foreach ($categories as $category) : ?>
         <tr>
-          <th scope="col"><input type="checkbox" name="checkbox[]" value="<?= $category['id']; ?>"></th>
+          <th scope="col"><input type="checkbox" name="subDelete[]" value="<?= $category['id']; ?>"></th>
           <th><?= $category['id']; ?></th>
           <td><a href="/cpanel/edit-category/<?= $category['id']; ?>/"><?= $category['title']; ?></a></td>
-          <td><a href="/cpanel/delete-category/<?= $category['id']; ?>/" class="btn btn-light">Удалить</a></td>
+          <td><button type="submit" name="subDelete[]" value="<?= $category['id']; ?>" class="btn btn-light">Удалить</a></td>
         </tr>
       <?php endforeach; ?>
     </tbody>
@@ -27,7 +27,7 @@
 
   <div class="button-bottom">
     <a class="btn btn-primary" href="/cpanel/create-category/">Создать категорию</a>
-    <button type="submit" name="submit" class="btn btn-primary">Удалить категории</button>
+    <button type="submit" class="btn btn-primary">Удалить категории</button>
     <a class="btn btn-primary" href="/cpanel/create-category-test/">Создать тестовую категорию</a>
   </div>
 

@@ -8,19 +8,18 @@ use \Project\Models\Group;
 
 class CategoryController extends Controller
 {
-    public static $group;
+    public $category;
 
-
-    /********************************
-     * Конструктор.
-     * Создаем экземпляр класса Group
-     * для проверки прав
-     ********************************/
+    public $errors  = false;
+    public $create = false;
+    public $update = false;
+    public $message = false;
 
     public function __construct()
     {
-        self::$group = new Group();
+        $this->category = new Category();
     }
+
 
     /********************************
      * Индексный метод категорий.
@@ -36,13 +35,11 @@ class CategoryController extends Controller
         // Если пользователь авторизован
         if (Group::is_role(1)) {
 
-            $category = new Category();
-
             // Получаем список всех категорий
-            $getCategories = $category->getCategoryAll();
+            $getCategories = $this->category->getCategories();
 
             // Массовое удаление постов
-            $this->deleteCategoryAll();
+            $this->deleteCategory();
 
             // Загружаем представление
             return $this->render('admin/category/index', [
@@ -64,41 +61,33 @@ class CategoryController extends Controller
 
     public function createCategory()
     {
+        // Тайтл страницы
         $this->title = 'cPanel: Создание категории';
-        $errors = false;
-        $create = false;
 
+        // Проверка прав на действия
         if (Group::is_role(1)) {
 
-            $category = new Category();
-            // $categories = $category->getCategoryAll();
+            // Получение данных из формы
+            $data = $this->category->getData();
 
-            // Сохранение поста
-            if (isset($_POST['submit'])) {
+            // Проверяем на соотвествия и ошибки
+            if ($data) {
+                $this->errors = $this->category->valCategory($data);
 
-                $title          =  $_POST['title'];
-                $description    =  $_POST['description'];
-
-                $parameters = [
-                    'заголовок'         => $title,
-                    'описание'          => $description,
-                ];
-
-                // Проверка на валидность полей
-                $errors = $category->notEmpty($parameters);
-
-                // Отправка данных и создание нового поста
-                if ($errors == false) {
-                    $create = $category->create($title, $description);
+                // Если ошибок нет, записываем данные в базу
+                if (!$this->errors) {
+                    $this->create = $this->category->create($data);
                 }
             }
 
+            // Загрузка представления
             return $this->render('admin/category/createCategory', [
-                'errors'        => $errors,
-                'create'        => $create
+                'errors'        => $this->errors,
+                'create'        => $this->create
             ]);
         }
 
+        // В ином случаем перенаправляем
         header('Location: /auth/');
         exit;
     }
@@ -113,41 +102,32 @@ class CategoryController extends Controller
     public function editCategory($arg)
     {
         $this->title = 'cPanel: Редактирование категории';
-        $errors = false;
-        $update = false;
 
-        // Пользователь авторизован?
         if (Group::is_role(1)) {
 
-            // Вытаскиваем данные
-            $category = new Category();
-            $categoryItem = $category->getCategoryById($arg['id']);
+            // Получение данных из формы
+            $data = $this->category->getData();
 
-            // Сохранение поста
-            if (isset($_POST['submit'])) {
+            // Получение данных категории
+            $categoryItem = $this->category->getCategoryById($arg['id']);
 
-                $title          =  $_POST['title'];
-                $description    =  $_POST['description'];
+            cast_print($categoryItem);
 
-                $parameters = [
-                    'заголовок'         => $title,
-                    'описание'          => $description
-                ];
+            // Проверяем на соответствия и ошибки
+            if ($data) {
+                $this->errors = $this->category->valCategory($data);
 
-                // Проверка на валидность полей
-                $errors = $category->notEmpty($parameters);
-
-                // Отправляем отредактированные данные в базу
-                if ($errors == false) {
-                    $update = $category->update($arg['id'], $title, $description);
+                // Если ошибок нет, записываем данные в базу
+                if (!$this->errors) {
+                    $this->update = $this->category->update($arg['id'], $data);
                 }
             }
 
             // Загружаем представление
             return $this->render('admin/category/editCategory', [
                 'category'      => $categoryItem,
-                'errors'        => $errors,
-                'update'        => $update
+                'errors'        => $this->errors,
+                'update'        => $this->update
             ]);
         }
 
@@ -157,41 +137,18 @@ class CategoryController extends Controller
 
 
     /********************************
-     * Одиночное удаление категории.
-     * Принимает аргументом id категории и  --------   Удаление только с правами
-     * удаляет
+     * Метод удаления категорий.
+     * Не принимает аргументов
      ********************************/
 
-    public function deleteCategory($arg)
+    public function deleteCategory()
     {
-        $category = new Category();
-        $result = $category->delete($arg['id']);
-        if ($result) {
-            header('Location: /cpanel/categories/');
-            exit;
-        }
-    }
+        $subDelete = $_POST['subDelete'] ?? false;
 
-
-    /********************************
-     * Массовое удаление категорий.
-     * Принимает данные из checkbox,  --------   Удаление только с правами
-     * и циклом удаляет категории
-     ********************************/
-
-    public function deleteCategoryAll()
-    {
-        $category = new Category();
-        $arrayCategoryId = false;
-
-        if (isset($_POST['submit']) && isset($_POST['checkbox'])) {
-
-            $arrayCategoryId = $_POST['checkbox'];
-
-            foreach ($arrayCategoryId as $item) {
-                $result = $category->delete($item);
+        if ($subDelete) {
+            foreach ($subDelete as $item) {
+                $this->category->delete($item);
             }
-
             header('Location: /cpanel/categories/');
             exit;
         }

@@ -5,11 +5,27 @@ namespace Project\Controllers;
 use \Core\Controller;
 use \Project\Models\Post;
 use \Project\Models\User;
-use \Project\Models\Category;
 use \Project\Models\Group;
+use \Project\Models\Category;
 
 class TestController extends Controller
 {
+    public $post;
+    public $user;
+    public $category;
+
+    public $errors  = false;
+    public $update  = false;
+    public $create  = false;
+    public $message = false;
+
+    public function __construct()
+    {
+        $this->post     = new Post();
+        $this->user     = new User();
+        $this->category = new Category();
+    }
+
 
     /********************************
      * Метод массового создания постов.
@@ -19,43 +35,43 @@ class TestController extends Controller
 
     public function createPostTest()
     {
-        $this->title = 'Тестовое создание поста';
-        $errors = false;
-        $create = false;
+        // Тайтл страницы
+        $this->title = 'cPanel: Создание поста';
 
+        // Проверка прав на действия
         if (Group::is_role(1)) {
-            $user       = new User();
-            $post       = new Post();
-            $category   = new Category();
-            $categories = $category->getCategoryAll();
 
-            // Сохранение поста
-            $title          =  'Тестовый заголовок';
-            $description    =  'Тестовое описание';
-            $keyword        =  'Тестовые, ключевые, слова';
-            $category_id    =  rand(1, 3);
-            $story          =  'Тестовый текст на странице';
-            $author_id      =  $_SESSION['id']; // костыльное решение, нужна доработка
+            // Получение списка категорий
+            $categories = $this->category->getCategoryAll();
 
-            $parameters = [
-                'заголовок'         => $title,
-                'описание'          => $description,
-                'ключевые слова'    => $keyword,
-                'категория'         => $category_id,
-                'текст поста'       => $story
+            // Транспартируем данные из формы
+            $data = [
+                'заголовок'         => 'Заголовок' . mt_rand(1, 99),
+                'описание'          => 'Описание' . mt_rand(1, 99),
+                'ключевые слова'    => 'Ключевые слова' . mt_rand(1, 99),
+                'категория'         => mt_rand(1, 3),
+                'текст поста'       => 'Какойто текст' . mt_rand(1, 99),
+                'автор'             => mt_rand(1, 3)
             ];
 
-            // Отправка данных и создание нового поста
-            for ($i = 1; $i <= 1; $i++) {
-                $create = $post->create($title, $category_id, $description, $keyword, $story, $author_id);
-                if ($create !== false) {
-                    $user->countPost(1);
+            // Проверяем на соответствие и ошибки
+            if ($data) {
+                $this->errors = $this->post->valPost($data);
+            }
+
+            // Если ошибок нет, pаписываем данные в базу
+            if (!$this->errors) {
+
+                for ($i = 1; $i <= 2; $i++) {
+                    $this->create = $this->post->create($data);
                 }
             }
+
             header('Location: /cpanel/posts/');
             exit;
         }
 
+        // В ином случаем перенаправляем
         header('Location: /auth/');
         exit;
     }
