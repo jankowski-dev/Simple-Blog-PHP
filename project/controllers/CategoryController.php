@@ -111,8 +111,6 @@ class CategoryController extends Controller
             // Получение данных категории
             $categoryItem = $this->category->getCategoryById($arg['id']);
 
-            cast_print($categoryItem);
-
             // Проверяем на соответствия и ошибки
             if ($data) {
                 $this->errors = $this->category->valCategory($data);

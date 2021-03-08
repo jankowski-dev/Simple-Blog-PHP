@@ -98,8 +98,6 @@ class Category extends Model
 				'описание'     => $description,
 			];
 
-			cast_print($data);
-
 			return $data;
 		}
 		return false;
