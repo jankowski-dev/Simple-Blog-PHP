@@ -47,10 +47,10 @@ return [
 	 ******************************/
 
 	// Выход из аккаунта
-	new Route('/logout/', 'user', 'logout'),
+	new Route('/logout/', 'auth', 'logout'),
 	// Форма авторизации
-	new Route('/auth/', 'user', 'auth'),
+	new Route('/auth/', 'auth', 'auth'),
 	// Форма регистрации
-	new Route('/register/', 'user', 'register'),
+	new Route('/register/', 'auth', 'register'),
 
 ];

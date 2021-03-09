@@ -9,6 +9,7 @@ use \Project\Models\Group;
 class CategoryController extends Controller
 {
     public $category;
+    public $group;
 
     public $errors  = false;
     public $create = false;
@@ -17,6 +18,7 @@ class CategoryController extends Controller
     public function __construct()
     {
         $this->category = new Category();
+        $this->group = new Group();
     }
 
 
@@ -32,7 +34,7 @@ class CategoryController extends Controller
         $errors = false;
 
         // Если пользователь авторизован
-        if (Group::is_role(1)) {
+        if ($this->group->admin()) {
 
             // Получаем список всех категорий
             $getCategories = $this->category->getCategories();
@@ -64,7 +66,7 @@ class CategoryController extends Controller
         $this->title = 'cPanel: Создание категории';
 
         // Проверка прав на действия
-        if (Group::is_role(1)) {
+        if ($this->group->admin()) {
 
             // Получение данных из формы
             $data = $this->category->getData();
@@ -102,7 +104,7 @@ class CategoryController extends Controller
     {
         $this->title = 'cPanel: Редактирование категории';
 
-        if (Group::is_role(1)) {
+        if ($this->group->admin()) {
 
             // Получение данных из формы
             $data = $this->category->getData();

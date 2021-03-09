@@ -11,6 +11,7 @@ class PostController extends Controller
 {
     public $post;
     public $category;
+    public $group;
 
     public $errors  = false;
     public $update  = false;
@@ -20,6 +21,7 @@ class PostController extends Controller
     {
         $this->post     = new Post();
         $this->category = new Category();
+        $this->group    = new Group();
     }
 
 
@@ -35,7 +37,7 @@ class PostController extends Controller
         $this->title = 'cPanel: Посты';
 
         // Проверка прав на действия
-        if (Group::is_role(1)) {
+        if ($this->group->admin()) {
 
             // Получаем список всех постов
             $getPosts = $this->post->getPosts();
@@ -65,7 +67,7 @@ class PostController extends Controller
         $this->title = 'cPanel: Редактирование поста';
 
         // Проверка прав на действия
-        if (Group::is_role(1)) {
+        if ($this->group->admin()) {
 
             // Получение данных поста
             $postItem = $this->post->getPostById($arg['id']);
@@ -89,18 +91,16 @@ class PostController extends Controller
                     $this->update = $this->post->update($arg['id'], $data);
                 }
             }
+            // Загружаем представление
+            return $this->render('admin/post/editPost', [
+                'post'        => $postItem,
+                'categories'  => $categories,
+                'errors'      => $this->errors,
+                'update'      => $this->update
+            ]);
         }
 
-        // Загружаем представление
-        return $this->render('admin/post/editPost', [
-            'post'        => $postItem,
-            'categories'  => $categories,
-            'errors'      => $this->errors,
-            'update'      => $this->update
-        ]);
-
-
-        header('Location: /auth/');
+        header('Location: /');
         exit;
     }
 
@@ -116,7 +116,7 @@ class PostController extends Controller
         $this->title = 'cPanel: Создание поста';
 
         // Проверка прав на действия
-        if (Group::is_role(1)) {
+        if ($this->group->admin()) {
 
             // Получение списка категорий
             $categories = $this->category->getCategories();

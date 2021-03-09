@@ -11,6 +11,7 @@ class TestController extends Controller
 {
     public $post;
     public $category;
+    public $group;
 
     public $update  = false;
     public $create  = false;
@@ -19,6 +20,7 @@ class TestController extends Controller
     {
         $this->post     = new Post();
         $this->category = new Category();
+        $this->group    = new Group();
     }
 
 
@@ -34,7 +36,7 @@ class TestController extends Controller
         $this->title = 'cPanel: Создание поста';
 
         // Проверка прав на действия
-        if (Group::is_role(1)) {
+        if ($this->group->admin()) {
 
             // Получение списка категорий
             $categories = $this->category->getCategories();
@@ -84,7 +86,7 @@ class TestController extends Controller
         $this->title = 'cPanel: Создание категории';
 
         // Проверка прав на действия
-        if (Group::is_role(1)) {
+        if ($this->group->admin()) {
 
             $data = [
                 'заголовок'    => 'Заголовок' . mt_rand(1, 99),

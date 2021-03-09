@@ -6,34 +6,57 @@ use \Core\Model;
 
 class Group extends Model
 {
+    public $model;
+    public $group;
+
+    public function __construct()
+    {
+        $this->model = new Model();
+
+        if (isset($_SESSION['id'])) {
+            $sessionID = intval($_SESSION['id']);
+            $user = $this
+                ->model
+                ->findOne("SELECT group_id FROM user WHERE id = $sessionID");
+            $this->group = intval($user['group_id']);
+        }
+    }
 
     /********************************
      * Права на доступ.
      * Аргументом является уровень прав
      ********************************/
 
-    public static function is_role($level)
+    public function admin()
     {
-        $model = new Model();
-
-        // Если сессия существует
         if (isset($_SESSION['id'])) {
-
-            // ID сессии
-            $sessionID = intval($_SESSION['id']);
-
-            // Запрос в базу на получение группы
-            $user = $model->findOne("SELECT group_id FROM user WHERE id = $sessionID");
-
-            // Преобразование типа
-            $groupID = intval($user['group_id']);
-
-            // Если уровень группы выше или равен
-            if ($groupID <= $level) {
-                return true;
-            }
-            return false;
+            $result = ($this->group == 1) ? true : false;
+            return $result;
         }
         return false;
+    }
+
+    public function manager()
+    {
+        if (isset($_SESSION['id'])) {
+            $result = ($this->group == 2 or $this->group == 1) ? true : false;
+            return $result;
+        }
+        return false;
+    }
+
+    public function user()
+    {
+        if (isset($_SESSION['id'])) {
+            $result = ($this->group == 3 or $this->group == 2 or $this->group == 1) ? true : false;
+            return $result;
+        }
+        return false;
+    }
+
+    public static function guest()
+    {
+        $result = !isset($_SESSION['id']) ? true : false;
+        return $result;
     }
 }
