@@ -97,12 +97,12 @@ class Post extends Model
 	{
 		if (isset($_POST['submit'])) {
 
-			$title          =  $_POST['title'];
-			$description    =  $_POST['description'];
-			$keyword        =  $_POST['keyword'];
-			$category_id    =  $_POST['category_id'];
-			$story          =  $_POST['story'];
-			$author_id      =  $_SESSION['id'];
+			$title          =  $_POST['title'] ?? false;
+			$description    =  $_POST['description'] ?? false;
+			$keyword        =  $_POST['keyword'] ?? false;
+			$category_id    =  $_POST['category_id'] ?? false;
+			$story          =  $_POST['story'] ?? false;
+			$author_id      =  $_SESSION['id'] ?? false;
 
 			$data = [
 				'заголовок'         => $title,

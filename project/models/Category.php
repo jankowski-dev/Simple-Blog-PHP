@@ -90,8 +90,8 @@ class Category extends Model
 	{
 		if (isset($_POST['submit'])) {
 
-			$title          =  $_POST['title'];
-			$description    =  $_POST['description'];
+			$title          =  $_POST['title'] ?? false;
+			$description    =  $_POST['description'] ?? false;
 
 			$data = [
 				'заголовок'    => $title,

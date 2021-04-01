@@ -53,4 +53,7 @@ return [
 	// Форма регистрации
 	new Route('/register/', 'auth', 'register'),
 
+
+	new Route('/', 'main', 'index'),
+
 ];

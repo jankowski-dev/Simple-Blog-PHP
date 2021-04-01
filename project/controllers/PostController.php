@@ -37,7 +37,7 @@ class PostController extends Controller
         $this->title = 'cPanel: Посты';
 
         // Проверка прав на действия
-        if ($this->group->admin()) {
+        if ($this->group->user()) {
 
             // Получаем список всех постов
             $getPosts = $this->post->getPosts();
@@ -72,32 +72,34 @@ class PostController extends Controller
             // Получение данных поста
             $postItem = $this->post->getPostById($arg['id']);
 
-            // Получение списка категорий
-            $categories = $this->category->getCategories();
+            if ($postItem) {
+                // Получение списка категорий
+                $categories = $this->category->getCategories();
 
-            // Транспартируем данные из формы
-            $data = $this->post->getData();
+                // Транспартируем данные из формы
+                $data = $this->post->getData();
 
-            // Если данные пришли из формы
-            if ($data) {
+                // Если данные пришли из формы
+                if ($data) {
 
-                // Проверка данных из формы
-                $this->errors = $this->post->valPost($data);
+                    // Проверка данных из формы
+                    $this->errors = $this->post->valPost($data);
 
-                // Проверка данных на ошибки
-                if (!$this->errors) {
+                    // Проверка данных на ошибки
+                    if (!$this->errors) {
 
-                    // Запись данных в базу
-                    $this->update = $this->post->update($arg['id'], $data);
+                        // Запись данных в базу
+                        $this->update = $this->post->update($arg['id'], $data);
+                    }
                 }
+                // Загружаем представление
+                return $this->render('admin/post/editPost', [
+                    'post'        => $postItem,
+                    'categories'  => $categories,
+                    'errors'      => $this->errors,
+                    'update'      => $this->update
+                ]);
             }
-            // Загружаем представление
-            return $this->render('admin/post/editPost', [
-                'post'        => $postItem,
-                'categories'  => $categories,
-                'errors'      => $this->errors,
-                'update'      => $this->update
-            ]);
         }
 
         header('Location: /');
@@ -155,14 +157,17 @@ class PostController extends Controller
 
     public function deletePost()
     {
+        $this->message = 'У вас нет прав на эту операцию';
         $subDelete = $_POST['subDelete'] ?? false;
 
-        if ($subDelete) {
-            foreach ($subDelete as $item) {
-                $this->post->delete($item);
+        if ($this->group->admin()) {
+            if ($subDelete) {
+                foreach ($subDelete as $item) {
+                    $this->post->delete($item);
+                }
+                header('Location: /cpanel/posts/');
+                exit;
             }
-            header('Location: /cpanel/posts/');
-            exit;
         }
     }
 }

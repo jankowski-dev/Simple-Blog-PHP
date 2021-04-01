@@ -16,7 +16,7 @@
 
     <?php if ($update == false) : ?>
 
-        <form action="" method="POST">
+        <form action="" method="POST" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputEmail4">Заголовок</label>
@@ -54,6 +54,15 @@
                     </label>
                 </div>
             </div>
+
+
+
+            <div class="form-group">
+                <label for="input">Изображение</label>
+                <input type="file" name="pictures[]"/>
+            </div>
+
+
             <button type="submit" name="submit" class="btn btn-primary">Сохранить</button>
         </form>
 
