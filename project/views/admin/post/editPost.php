@@ -41,7 +41,7 @@
             </div>
             <div class="form-group">
                 <label for="inputAddress">Текст поста</label>
-                <textarea rows="18" name="story" class="form-control" id="textarea"><?= $post['story']; ?></textarea>
+                <textarea rows="18" name="story" class="form-control" id="editor"><?= $post['story']; ?></textarea>
             </div>
             <div class="form-group">
                 <label for="inputAddress">Ключевые слова</label>

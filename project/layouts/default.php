@@ -8,9 +8,8 @@
 	<link rel="stylesheet" href="/project/webroot/css/style.css">
 	<link rel="stylesheet" href="/project/webroot/css/main.css">
     <link rel="stylesheet" href="/project/webroot/css/media.css">
-	<!-- <link rel="stylesheet" href="/project/webroot/libraries/bootstrap_4.5.3/css/bootstrap.min.css"> -->
+	<link rel="stylesheet" href="/project/webroot/libraries/bootstrap_4.5.3/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Exo:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-	<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 	<script>
 		tinymce.init({
 			selector: '#textarea'
@@ -21,6 +20,7 @@
 
 <body>
 	<?= $content ?>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 	<script src="/project/webroot/libraries/bootstrap_4.5.3/js/bootstrap.min.js"></script>
 </body>
 

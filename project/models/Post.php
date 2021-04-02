@@ -17,7 +17,6 @@ class Post extends Model
 		return $this->findMany("SELECT post.id, post.title, post.date, category.title as category FROM post JOIN category ON category.id = post.category_id ORDER BY post.id;");
 	}
 
-
 	/********************************
 	 * Метод получает одну запись.
 	 * Принимает аргументом id записи
@@ -25,8 +24,19 @@ class Post extends Model
 
 	public function getPostById($id)
 	{
-		return $this->findOne("SELECT * FROM post WHERE id=$id");
+		return $this->findOne("SELECT post.id, post.title, post.description, post.date, post.keyword, post.story, post.category_id, category.title as category FROM post JOIN category ON category.id = post.category_id WHERE post.id = $id");
 	}
+
+
+	/********************************
+	 * Метод получает одну запись.
+	 * Принимает аргументом id записи
+	 ********************************/
+
+	// public function getPostById($id)
+	// {
+	// 	return $this->findOne("SELECT * FROM post WHERE id=$id");
+	// }
 
 
 	/********************************
@@ -85,6 +95,17 @@ class Post extends Model
 		$rezult->bindParam(':id', $id, \PDO::PARAM_STR);
 		return $rezult->execute();
 	}
+
+	/********************************
+	 * Метод преобразует дату в нужный формат.
+	 * Принимает аргументом дату и возвращает
+	 * отформатированный вариант
+	 ********************************/
+
+	 public function getDate($arg) {
+		$date = date("d/m/Y", strtotime($arg));
+		return $date;
+	 }
 
 
 	/********************************

@@ -22,6 +22,8 @@ return [
 	new Route('/cpanel/create-post/', 'post', 'createPost'),
 	// Редактирование поста
 	new Route('/cpanel/edit-post/:id/', 'post', 'editPost'),
+	// Просмотр поста
+	new Route('/post/:id/', 'main', 'viewPost'),
 
 	/* Категории */
 	// Список категорий
