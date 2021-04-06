@@ -55,11 +55,11 @@
                 </div>
             </div>
 
-
+            <img src="/project/webroot/img/post_image/<?= $post['image'] ?>" alt="">
 
             <div class="form-group">
                 <label for="input">Изображение</label>
-                <input type="file" name="pictures[]"/>
+                <input type="file" name="picture"/>
             </div>
 
 

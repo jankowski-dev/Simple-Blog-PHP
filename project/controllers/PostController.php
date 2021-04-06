@@ -6,12 +6,14 @@ use \Core\Controller;
 use \Project\Models\Post;
 use \Project\Models\Group;
 use \Project\Models\Category;
+use \Project\Models\File;
 
 class PostController extends Controller
 {
     public $post;
     public $category;
     public $group;
+    public $file;
 
     public $errors  = false;
     public $update  = false;
@@ -22,6 +24,7 @@ class PostController extends Controller
         $this->post     = new Post();
         $this->category = new Category();
         $this->group    = new Group();
+        $this->file     = new File();
     }
 
 
@@ -89,6 +92,8 @@ class PostController extends Controller
 
                         // Запись данных в базу
                         $this->update = $this->post->update($arg['id'], $data);
+                        $this->file->uploadFile($arg['id']);
+
                     }
                 }
                 // Загружаем представление
@@ -131,7 +136,13 @@ class PostController extends Controller
 
                 // Если ошибок нет, записываем данные в базу
                 if (!$this->errors) {
-                    $this->create = $this->post->create($data);
+
+                    $id = $this->post->create($data);
+
+                    // Загрузка файлов
+                    if ($id) {
+                        $this->create = $this->file->uploadFile($id);
+                    }
                 }
             }
 

@@ -26,6 +26,7 @@
                 </div>
             </div>
             <div class="fullInfo">
+            <img src="/project/webroot/img/post_image/<?= $post['image'] ?>" alt="">
             <?= $post['story'] ?>
             </div>
 

@@ -24,19 +24,8 @@ class Post extends Model
 
 	public function getPostById($id)
 	{
-		return $this->findOne("SELECT post.id, post.title, post.description, post.date, post.keyword, post.story, post.category_id, category.title as category FROM post JOIN category ON category.id = post.category_id WHERE post.id = $id");
+		return $this->findOne("SELECT post.id, post.image, post.title, post.description, post.date, post.keyword, post.story, post.category_id, category.title as category FROM post JOIN category ON category.id = post.category_id WHERE post.id = $id");
 	}
-
-
-	/********************************
-	 * Метод получает одну запись.
-	 * Принимает аргументом id записи
-	 ********************************/
-
-	// public function getPostById($id)
-	// {
-	// 	return $this->findOne("SELECT * FROM post WHERE id=$id");
-	// }
 
 
 	/********************************
@@ -57,7 +46,11 @@ class Post extends Model
 		$result->bindParam(':story', $data['текст поста'], \PDO::PARAM_STR);
 		$result->bindParam(':author_id', $data['автор'], \PDO::PARAM_STR);
 
-		return $result->execute();
+		if ($result->execute()) {
+			return self::$link->lastInsertId();
+		}
+
+		return false;
 	}
 
 
