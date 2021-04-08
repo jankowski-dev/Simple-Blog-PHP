@@ -3,6 +3,7 @@
 namespace Project\Models;
 
 use \Core\Model;
+use \Project\Models\File;
 
 class Post extends Model
 {
@@ -49,7 +50,6 @@ class Post extends Model
 		if ($result->execute()) {
 			return self::$link->lastInsertId();
 		}
-
 		return false;
 	}
 
@@ -95,11 +95,34 @@ class Post extends Model
 	 * отформатированный вариант
 	 ********************************/
 
-	 public function getDate($arg) {
+	public function getDate($arg)
+	{
 		$date = date("d/m/Y", strtotime($arg));
 		return $date;
-	 }
+	}
 
+
+	/********************************
+	 * Метод добавляет картинку в пост.
+	 * Принимает аргументом id поста и возвращает
+	 * true либо false
+	 ********************************/
+
+	public function setFile($id)
+	{
+		$image = File::uploadFile();
+
+		if ($image) {
+
+			$sql = "UPDATE `post` SET `image`= :image WHERE `id` = :id";
+
+			$result = self::$link->prepare($sql);
+			$result->bindParam(':id', $id, \PDO::PARAM_STR);
+			$result->bindParam(':image', $image, \PDO::PARAM_STR);
+			return $result->execute();
+		}
+		return false;
+	}
 
 	/********************************
 	 * Метод считывает данные из формы.

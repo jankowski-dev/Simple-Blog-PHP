@@ -73,6 +73,7 @@ class PostController extends Controller
 
             // Получение данных поста
             $postItem = $this->post->getPostById($arg['id']);
+            // $fileItem = $this->file->getFile($arg['id']);
 
             if ($postItem) {
                 // Получение списка категорий
@@ -90,10 +91,11 @@ class PostController extends Controller
                     // Проверка данных на ошибки
                     if (!$this->errors) {
 
-                        // Запись данных в базу
+                        // Обновляем данные в базе
                         $this->update = $this->post->update($arg['id'], $data);
-                        $this->file->uploadFile($arg['id']);
 
+                        // Обновляем данные изображения в базе
+                        $this->post->setFile($arg['id']);
                     }
                 }
                 // Загружаем представление
@@ -137,12 +139,11 @@ class PostController extends Controller
                 // Если ошибок нет, записываем данные в базу
                 if (!$this->errors) {
 
-                    $id = $this->post->create($data);
+                    // Записываем в базу данные из полей
+                    $this->create = $this->post->create($data);
 
-                    // Загрузка файлов
-                    if ($id) {
-                        $this->create = $this->file->uploadFile($id);
-                    }
+                    // Записываем в базу данные изображения
+                    $this->post->setFile($this->create);
                 }
             }
 

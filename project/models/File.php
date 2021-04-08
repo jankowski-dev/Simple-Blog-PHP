@@ -6,21 +6,16 @@ use \Core\Model;
 
 class File extends Model
 {
-    public $path = '/project/webroot/img/post_image/';
-    public $fileName;
+    public static $fileName;
+    public static $path = '/project/webroot/img/post_image/';
 
-    public function uploadFile($id)
+
+    public static function uploadFile()
     {
-        $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . $this->path;
-        $uploadFile = $uploadDirectory . $id . '_' . basename($_FILES['picture']['name']);
-        $this->fileName = basename($uploadFile);
-        $fileResult = move_uploaded_file($_FILES['picture']['tmp_name'], $uploadFile) ? true : false;
-        if ($fileResult) {
-            $sql = "UPDATE post SET image = :image WHERE id = :id";
-            $result = self::$link->prepare($sql);
-            $result->bindParam(':id', $id, \PDO::PARAM_STR);
-            $result->bindParam(':image', $this->fileName, \PDO::PARAM_STR);
-            return $result->execute();
-        }
+        $uploadDirectory = $_SERVER['DOCUMENT_ROOT'] . self::$path;
+        $uploadFile = $uploadDirectory . basename($_FILES['picture']['name']);
+        self::$fileName = basename($uploadFile);
+        $transfer = move_uploaded_file($_FILES['picture']['tmp_name'], $uploadFile);
+        return $result = $transfer ? self::$fileName : false;
     }
 }
