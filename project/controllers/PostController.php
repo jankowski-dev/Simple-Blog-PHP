@@ -131,6 +131,7 @@ class PostController extends Controller
 
             // Получение данных из формы
             $data = $this->post->getData();
+            cast_print($data);
 
             // Проверяем на соответствие и ошибки
             if ($data) {

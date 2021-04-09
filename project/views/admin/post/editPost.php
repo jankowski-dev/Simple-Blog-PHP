@@ -50,7 +50,8 @@
             <div class="form-group">
                 <div class="form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox"> Закрепить
+                    <input class="form-check-input" name="fixed" value="1" type="checkbox" <?php if ($post['fixed'] == 1) { echo "checked"; } ?>> Закрепить <br>
+                        <input class="form-check-input" name="main" value="1"  type="checkbox" <?php if ($post['main_post'] == 1) { echo "checked"; } ?>> Главная новость
                     </label>
                 </div>
             </div>
