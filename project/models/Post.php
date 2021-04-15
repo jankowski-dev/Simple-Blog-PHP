@@ -36,53 +36,70 @@ class Post extends Model
 
 
 	/********************************
-	 * Метод получает главный пост.
-	 * Принимает аргументом массив данных
+	 * Метод обрабатывает и сортирует посты.
+	 * Принимает аргументом массив данных из базы
+	 * Возвращает массив сортированных данных
 	 ********************************/
 
-	public function getMainPost($data)
+	public function handlerPost($posts)
 	{
-		foreach ($data as $post) {
+		// Сортируем массив данных от свежих постов к старым
+		$sort = usort($posts, 'sortDateDesc');
+
+		// Значения по умолчанию
+		$fixedPost = false;
+		$mainPost = $posts[0];
+
+		// Ищем посты с пометкой "Главная новость"
+		foreach ($posts as $post) {
+			// Если находим соответствие
 			if ($post['main_post'] == 1) {
-				return $post;
+				// Создаем пост для главной
+				$mainPost = $post;
+				// Удаляем его из основной выборки
+				foreach ($posts as $key => $value) {
+					if ($value['id'] == $post['id']) {
+						unset($posts[$key]);
+					}
+				}
+				break;
 			}
 		}
-		return 1;
-	}
 
-
-	/********************************
-	 * Метод получает массив фиксированных постов.
-	 * Принимает аргументом массив данных
-	 ********************************/
-
-	public function getFixedPost($data)
-	{
-		$fixedPosts = false;
-		foreach ($data as $post) {
+		// Ищем посты с пометкой "Закрепить"
+		foreach ($posts as $post) {
+			// Если находим соответствие
 			if ($post['fixed'] == 1) {
-				$fixedPosts[] = $post;
+				// Добавляем посты в массив
+				$fixedPost[] = $post;
+				// Удаляем его из основной выборки
+				foreach ($posts as $key => $value) {
+					if ($value['id'] == $post['id']) {
+						unset($posts[$key]);
+					}
+				}
 			}
 		}
-		return $result = $fixedPosts ? $fixedPosts : false;
+
+
+		return $data = [
+			'mainPost' 	=> $mainPost,
+			'fixedPost' => $fixedPost,
+			'allPosts'	=> $posts
+		];
 	}
 
 
 	/********************************
-	 * Метод получает массив отобранных данных.
-	 * Не включает в себя фиксированные и главные посты
-	 * Принимает аргументом массив данных
+	 * Метод преобразует дату в нужный формат.
+	 * Принимает аргументом дату и возвращает
+	 * отформатированный вариант
 	 ********************************/
 
-	public function getLastPosts($data)
+	public function getDate($arg)
 	{
-		$posts = false;
-		foreach ($data as $post) {
-			if ($post['fixed'] == 0 and $post['main_post'] == 0) {
-				$posts[] = $post;
-			}
-		}
-		return $result = $posts ? $posts : false;
+		$date = date("d/m/Y", strtotime($arg));
+		return $date;
 	}
 
 
@@ -149,18 +166,6 @@ class Post extends Model
 		$rezult = self::$link->prepare($sql);
 		$rezult->bindParam(':id', $id, \PDO::PARAM_STR);
 		return $rezult->execute();
-	}
-
-	/********************************
-	 * Метод преобразует дату в нужный формат.
-	 * Принимает аргументом дату и возвращает
-	 * отформатированный вариант
-	 ********************************/
-
-	public function getDate($arg)
-	{
-		$date = date("d/m/Y", strtotime($arg));
-		return $date;
 	}
 
 

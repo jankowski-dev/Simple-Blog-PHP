@@ -40,7 +40,7 @@ class PostController extends Controller
         $this->title = 'cPanel: Посты';
 
         // Проверка прав на действия
-        if ($this->group->user()) {
+        if ($this->group->admin()) {
 
             // Получаем список всех постов
             $getPosts = $this->post->getPosts();
@@ -73,7 +73,6 @@ class PostController extends Controller
 
             // Получение данных поста
             $postItem = $this->post->getPostById($arg['id']);
-            // $fileItem = $this->file->getFile($arg['id']);
 
             if ($postItem) {
                 // Получение списка категорий

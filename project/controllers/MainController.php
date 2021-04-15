@@ -29,21 +29,21 @@ class MainController extends Controller
     {
         $this->title = 'Главная страница';
 
-        // Выборка всех постов по убыванию
-        $data = $this->post->getPosts();
+        // Выборка всех постов
+        $posts = $this->post->getPosts();
 
-        $mainPost = $this->post->getMainPost($data);
-        $fixedPosts = $this->post->getFixedPost($data);
-        $lastPosts = $this->post->getLastPosts($data);
+        // Обработка и сортировка постов
+        $data = $this->post->handlerPost($posts);
 
 
         // Загружаем представление
         return $this->render('main/index', [
-            'posts'     => $lastPosts,
-            'mainPost'  => $mainPost,
-            'fixedPosts' => $fixedPosts,
-            'object'    => $this->post
+            'posts'         => $data['allPosts'],
+            'mainPost'      => $data['mainPost'],
+            'fixedPosts'    => $data['fixedPost'],
+            'date'          => $this->post
         ]);
+
     }
 
     /********************************

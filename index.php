@@ -20,6 +20,7 @@ define('URI', $_SERVER['REQUEST_URI']);
 require_once ROOT . '/project/config/autoload.php';
 require_once ROOT . '/project/config/config.php';
 require_once ROOT . '/project/config/debug.php';
+require_once ROOT . '/project/config/libraries.php';
 
 
 $routes = require ROOT . '/project/config/routes.php';
