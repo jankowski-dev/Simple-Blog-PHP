@@ -30,6 +30,8 @@ class AdminController extends Controller
         // Если пользователь авторизован
         if ($this->group->admin()) {
 
+
+
             // Загружаем представление
             return $this->render('admin/index', []);
         }

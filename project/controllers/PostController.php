@@ -7,6 +7,7 @@ use \Project\Models\Post;
 use \Project\Models\Group;
 use \Project\Models\Category;
 use \Project\Models\File;
+use \Project\Models\Comment;
 
 class PostController extends Controller
 {
@@ -14,6 +15,7 @@ class PostController extends Controller
     public $category;
     public $group;
     public $file;
+    public $comment;
 
     public $errors  = false;
     public $update  = false;
@@ -25,6 +27,7 @@ class PostController extends Controller
         $this->category = new Category();
         $this->group    = new Group();
         $this->file     = new File();
+        $this->comment  = new Comment();
     }
 
 
@@ -130,7 +133,6 @@ class PostController extends Controller
 
             // Получение данных из формы
             $data = $this->post->getData();
-            cast_print($data);
 
             // Проверяем на соответствие и ошибки
             if ($data) {
@@ -168,7 +170,6 @@ class PostController extends Controller
 
     public function deletePost()
     {
-        $this->message = 'У вас нет прав на эту операцию';
         $subDelete = $_POST['subDelete'] ?? false;
 
         if ($this->group->admin()) {

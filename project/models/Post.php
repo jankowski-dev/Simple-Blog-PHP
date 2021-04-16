@@ -50,6 +50,7 @@ class Post extends Model
 		$fixedPost = false;
 		$mainPost = $posts[0];
 
+
 		// Ищем посты с пометкой "Главная новость"
 		foreach ($posts as $post) {
 			// Если находим соответствие
