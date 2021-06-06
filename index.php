@@ -25,6 +25,6 @@ require_once ROOT . '/project/config/libraries.php';
 
 $routes = require ROOT . '/project/config/routes.php';
 $track = (new Router)->getTrack($routes, URI);
-$age  = (new Dispatcher)->getPage($track);
+$page  = (new Dispatcher)->getPage($track);
 
 echo (new View)->render($page);
