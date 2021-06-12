@@ -70,6 +70,7 @@ class MainController extends Controller
         // Добавление комментария
         if ($commentData) {
             $result = $this->comment->create($commentData, $arg['id']);
+
             header("Refresh:0");
         }
 

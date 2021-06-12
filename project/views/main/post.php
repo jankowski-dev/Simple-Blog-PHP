@@ -1,4 +1,4 @@
-<?php include_once 'project\layouts\user\header.php' ?>
+<?php include_once 'project/layouts/user/header.php' ?>
 
 
 <main class="customContainer">
@@ -91,4 +91,4 @@
     </div>
 </main>
 
-<?php include_once 'project\layouts\user\footer.php' ?>
+<?php include_once 'project/layouts/user/footer.php' ?>

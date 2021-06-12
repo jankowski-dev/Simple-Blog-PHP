@@ -1,4 +1,4 @@
-<?php include_once 'project\layouts\user\header.php' ?>
+<?php include_once 'project/layouts/user/header.php' ?>
 
 <div class="headerInfo bg-blue">
 
@@ -38,42 +38,42 @@
         </div>
 
 
-    <?php if ($fixedPosts !== false) : ?>
-        <?php foreach ($fixedPosts as $fixedPost) : ?>
-            <article class="shortPost red">
-                <div class="categoryBlock p-bot-20">
-                    <svg id="iconCategory" class="iconSm i-black">
-                        <use xlink:href="/project/webroot/libraries/svg/icon.svg#cpu"></use>
-                    </svg>
-                    <h4 class="blue"><?= $fixedPost['category'] ?></h3>
-                </div>
-                <a href="/post/<?= $fixedPost['id'] ?>/" class="black">
-                    <h2><?= $fixedPost['title'] ?></h2>
-                </a>
-                <p>I’ve always wished I had a life user manual of sorts. Like the one you get when you buy new software; full of tips and tricks on how to use the thing. I believe it would save me from making so many dumb mistakes. So in this letter, I’ve
-                    put together the big things I’ve learned by 24.</p>
-                <div class="paramsPost bg-light-blue">
-                    <div class="paramsPostItem">
-                        <svg id="iconStatic" class="iconSm i-blue">
-                            <use xlink:href="/project/webroot/libraries/svg/icon.svg#glass"></use>
+        <?php if ($fixedPosts !== false) : ?>
+            <?php foreach ($fixedPosts as $fixedPost) : ?>
+                <article class="shortPost red">
+                    <div class="categoryBlock p-bot-20">
+                        <svg id="iconCategory" class="iconSm i-black">
+                            <use xlink:href="/project/webroot/libraries/svg/icon.svg#cpu"></use>
                         </svg>
-                        <span>126</span>
+                        <h4 class="blue"><?= $fixedPost['category'] ?></h3>
                     </div>
-                    <div class="paramsPostItem">
-                        <svg id="iconStatic" class="iconSm i-blue">
-                            <use xlink:href="/project/webroot/libraries/svg/icon.svg#comment"></use>
-                        </svg>
-                        <span>8</span>
+                    <a href="/post/<?= $fixedPost['id'] ?>/" class="black">
+                        <h2><?= $fixedPost['title'] ?></h2>
+                    </a>
+                    <p>I’ve always wished I had a life user manual of sorts. Like the one you get when you buy new software; full of tips and tricks on how to use the thing. I believe it would save me from making so many dumb mistakes. So in this letter, I’ve
+                        put together the big things I’ve learned by 24.</p>
+                    <div class="paramsPost bg-light-blue">
+                        <div class="paramsPostItem">
+                            <svg id="iconStatic" class="iconSm i-blue">
+                                <use xlink:href="/project/webroot/libraries/svg/icon.svg#glass"></use>
+                            </svg>
+                            <span>126</span>
+                        </div>
+                        <div class="paramsPostItem">
+                            <svg id="iconStatic" class="iconSm i-blue">
+                                <use xlink:href="/project/webroot/libraries/svg/icon.svg#comment"></use>
+                            </svg>
+                            <span>8</span>
+                        </div>
+                        <div class="paramsPostItem">
+                            <svg id="iconStatic" class="iconSm i-blue">
+                                <use xlink:href="/project/webroot/libraries/svg/icon.svg#calendar"></use>
+                            </svg>
+                            <span><?= $date->getDate($fixedPost['date']) ?></span>
+                        </div>
                     </div>
-                    <div class="paramsPostItem">
-                        <svg id="iconStatic" class="iconSm i-blue">
-                            <use xlink:href="/project/webroot/libraries/svg/icon.svg#calendar"></use>
-                        </svg>
-                        <span><?= $date->getDate($fixedPost['date']) ?></span>
-                    </div>
-                </div>
-            </article>
-        <?php endforeach; ?>
+                </article>
+            <?php endforeach; ?>
         <?php endif; ?>
 
 
@@ -121,7 +121,7 @@
     </div>
 </main>
 
-<?php include_once 'project\layouts\user\footer.php' ?>
+<?php include_once 'project/layouts/user/footer.php' ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 <script src="lib/bootstrap/js/bootstrap.min.js"></script>
