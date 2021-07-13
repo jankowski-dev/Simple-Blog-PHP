@@ -28,4 +28,3 @@ $track = (new Router)->getTrack($routes, URI);
 $page  = (new Dispatcher)->getPage($track);
 
 echo (new View)->render($page);
-echo "ddd";
