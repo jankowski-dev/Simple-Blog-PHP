@@ -65,13 +65,13 @@ class MainController extends Controller
         $comments = $this->comment->getComments($arg['id']);
 
         // Получаем данные из формы комментариев
-        $commentData = $this->comment->getdata();
+        $commentData = $this->comment->getData();
 
         // Добавление комментария
         if ($commentData) {
             $result = $this->comment->create($commentData, $arg['id']);
-
-            header("Refresh:0");
+            header('Refresh: 0');
+            exit;
         }
 
         // Загружаем представление

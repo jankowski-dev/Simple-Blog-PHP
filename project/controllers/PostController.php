@@ -133,6 +133,7 @@ class PostController extends Controller
 
             // Получение данных из формы
             $data = $this->post->getData();
+            cast_print($data);
 
             // Проверяем на соответствие и ошибки
             if ($data) {
@@ -143,6 +144,7 @@ class PostController extends Controller
 
                     // Записываем в базу данные из полей
                     $this->create = $this->post->create($data);
+                    cast_print($this->create);
 
                     // Записываем в базу данные изображения
                     $this->post->setFile($this->create);

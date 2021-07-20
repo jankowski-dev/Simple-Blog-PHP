@@ -112,7 +112,7 @@ class Post extends Model
 	public function create($data)
 	{
 
-		$sql = "INSERT post (title, category_id, description, keyword, story, author_id, fixed, main_post)
+		$sql = "INSERT INTO post (title, category_id, description, keyword, story, author_id, fixed, main_post)
 				VALUES (:title, :category_id, :desc, :keyword, :story, :author_id, :fixed, :main_post)";
 
 		$result = self::$link->prepare($sql);
