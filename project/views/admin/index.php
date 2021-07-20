@@ -1,1 +1,1 @@
-<?php include_once 'project\layouts\admin\header.php' ?>
+<?php include_once 'project/layouts/admin/header.php' ?>

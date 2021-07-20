@@ -15,9 +15,7 @@ class Group extends Model
 
         if (isset($_SESSION['id'])) {
             $sessionID = intval($_SESSION['id']);
-            $user = $this
-                ->model
-                ->findOne("SELECT group_id FROM user WHERE id = $sessionID");
+            $user = $this->model->findOne("SELECT group_id FROM user WHERE id = $sessionID");
             $this->group = intval($user['group_id']);
         }
     }

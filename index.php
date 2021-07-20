@@ -22,7 +22,6 @@ require_once ROOT . '/project/config/config.php';
 require_once ROOT . '/project/config/debug.php';
 require_once ROOT . '/project/config/libraries.php';
 
-
 $routes = require ROOT . '/project/config/routes.php';
 $track = (new Router)->getTrack($routes, URI);
 $page  = (new Dispatcher)->getPage($track);
