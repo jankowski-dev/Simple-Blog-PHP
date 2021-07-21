@@ -11,6 +11,11 @@ www.jankowski.dev
     box-sizing: border-box !important;
 }
 
+input,
+textarea {
+    font-size: 16px !important;
+    }
+
 html,
 body {
     padding: 0;
